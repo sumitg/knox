@@ -31,6 +31,7 @@ import org.apache.hadoop.gateway.services.registry.ServiceRegistry;
 import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
 import org.apache.hadoop.gateway.topology.Topology;
+import org.apache.hadoop.gateway.util.ServiceDefinitionsLoader;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -40,6 +41,7 @@ import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.webcommon30.ServletType;
 
 import java.beans.Statement;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ import java.util.LinkedHashMap;
 public abstract class DeploymentFactory {
 
   private static final String DEFAULT_APP_REDIRECT_CONTEXT_PATH = "redirectTo";
+  private static final String STACKS_SERVICES_DIRECTORY = "services";
   private static GatewayResources res = ResourcesFactory.get( GatewayResources.class );
   private static GatewayMessages log = MessagesFactory.get( GatewayMessages.class );
   private static GatewayServices gatewayServices = null;
@@ -77,6 +80,12 @@ public abstract class DeploymentFactory {
 
   public static WebArchive createDeployment( GatewayConfig config, Topology topology ) {
     DeploymentContext context = null;
+     //TODO move the loading of service defs
+    String stacks = config.getGatewayStacksDir();
+    File stacksDir = new File(stacks, STACKS_SERVICES_DIRECTORY);
+    Set<ServiceDeploymentContributor> deploymentContributors = ServiceDefinitionsLoader.loadServiceDefinitions(stacksDir);
+    addServiceDeploymentContributors(SERVICE_CONTRIBUTOR_MAP, deploymentContributors.iterator());
+
     Map<String,List<ProviderDeploymentContributor>> providers = selectContextProviders( topology );
     Map<String,List<ServiceDeploymentContributor>> services = selectContextServices( topology );
     context = createDeploymentContext( config, topology.getName(), topology, providers, services );
@@ -398,35 +407,36 @@ public abstract class DeploymentFactory {
   }  
   
   private static void loadServiceContributors() {
-    Set<ServiceDeploymentContributor> set = new HashSet<ServiceDeploymentContributor>();
     Map<String,Map<String,ServiceDeploymentContributor>> roleMap
         = new HashMap<String,Map<String,ServiceDeploymentContributor>>();
 
     ServiceLoader<ServiceDeploymentContributor> loader = ServiceLoader.load( ServiceDeploymentContributor.class );
     Iterator<ServiceDeploymentContributor> contributors = loader.iterator();
-    while( contributors.hasNext() ) {
-      ServiceDeploymentContributor contributor = contributors.next();
-      if( contributor.getName() == null ) {
-        log.ignoringServiceContributorWithMissingName( contributor.getClass().getName() );
-        continue;
-      }
-      if( contributor.getRole() == null ) {
-        log.ignoringServiceContributorWithMissingRole( contributor.getClass().getName() );
-        continue;
-      }
-      set.add( contributor );
-      Map nameMap = roleMap.get( contributor.getRole() );
-      if( nameMap == null ) {
-        nameMap = new HashMap<String,ServiceDeploymentContributor>();
-        roleMap.put( contributor.getRole(), nameMap );
-      }
-      nameMap.put( contributor.getName(), contributor );
-    }
-    //SERVICE_CONTRIBUTORS = set;
-    SERVICE_CONTRIBUTOR_MAP = roleMap;
+     addServiceDeploymentContributors(roleMap, contributors);
+     SERVICE_CONTRIBUTOR_MAP = roleMap;
   }
 
-  private static void loadProviderContributors() {
+   private static void addServiceDeploymentContributors(Map<String, Map<String, ServiceDeploymentContributor>> roleMap, Iterator<ServiceDeploymentContributor> contributors) {
+      while( contributors.hasNext() ) {
+        ServiceDeploymentContributor contributor = contributors.next();
+        if( contributor.getName() == null ) {
+          log.ignoringServiceContributorWithMissingName( contributor.getClass().getName() );
+          continue;
+        }
+        if( contributor.getRole() == null ) {
+          log.ignoringServiceContributorWithMissingRole( contributor.getClass().getName() );
+          continue;
+        }
+        Map nameMap = roleMap.get( contributor.getRole() );
+        if( nameMap == null ) {
+          nameMap = new HashMap<String,ServiceDeploymentContributor>();
+          roleMap.put( contributor.getRole(), nameMap );
+        }
+        nameMap.put( contributor.getName(), contributor );
+      }
+   }
+
+   private static void loadProviderContributors() {
     Set<ProviderDeploymentContributor> set = new HashSet<ProviderDeploymentContributor>();
     Map<String,Map<String,ProviderDeploymentContributor>> roleMap
         = new HashMap<String,Map<String,ProviderDeploymentContributor>>();
