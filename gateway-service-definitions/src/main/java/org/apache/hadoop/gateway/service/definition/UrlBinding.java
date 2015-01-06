@@ -19,55 +19,31 @@ package org.apache.hadoop.gateway.service.definition;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
-@XmlRootElement(name = "service")
-public class ServiceDefinition {
+@XmlType(name = "url")
+public class UrlBinding {
 
-  private String name;
+  private String pattern;
 
-  private String role;
-
-  private String version;
-
-  private List<UrlBinding> urlBindings;
+  private List<RewriteFilter> rewriteFilters;
 
   @XmlAttribute
-  public String getName() {
-    return name;
+  public String getPattern() {
+    return pattern;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setPattern(String pattern) {
+    this.pattern = pattern;
   }
 
-  @XmlAttribute
-  public String getRole() {
-    return role;
+  @XmlElement(name = "rewrite-filter")
+  public List<RewriteFilter> getRewriteFilters() {
+    return rewriteFilters;
   }
 
-  public void setRole(String role) {
-    this.role = role;
-  }
-
-  @XmlAttribute
-  public String getVersion() {
-    return version;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
-  @XmlElement(name = "url")
-  @XmlElementWrapper(name = "urls")
-  public List<UrlBinding> getUrlBindings() {
-    return urlBindings;
-  }
-
-  public void setUrlBindings(List<UrlBinding> urlBindings) {
-    this.urlBindings = urlBindings;
+  public void setRewriteFilters(List<RewriteFilter> rewriteFilters) {
+    this.rewriteFilters = rewriteFilters;
   }
 }

@@ -26,7 +26,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class ServiceDefinitionTest {
 
@@ -39,22 +38,9 @@ public class ServiceDefinitionTest {
     assertEquals("resourcemanager", definition.getName());
     assertEquals("RESOURCEMANAGER", definition.getRole());
     assertEquals("2.5.0", definition.getVersion());
-    List<Route> bindings = definition.getRoutes();
+    List<UrlBinding> bindings = definition.getUrlBindings();
     assertNotNull(bindings);
     assertEquals(12, bindings.size());
-    assertNotNull(bindings.get(0).getPath());
-    url = ClassLoader.getSystemResource("services/hbase/0.98.0/service.xml");
-    definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
-    assertNotNull(definition.getDispatch());
-    assertEquals("hbase", definition.getDispatch().getContributorName());
-    url = ClassLoader.getSystemResource("services/webhdfs/2.4.0/service.xml");
-    definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
-    assertNotNull(definition.getDispatch());
-    assertEquals("hdfs", definition.getDispatch().getContributorName());
-    assertEquals("ha-hdfs", definition.getDispatch().getHaContributorName());
-    List<Policy> policyBindings = definition.getPolicies();
-    assertNotNull(policyBindings);
-    assertEquals("webappsec", policyBindings.get(0).getRole());
-    assertNull(policyBindings.get(0).getName());
+    assertNotNull(bindings.get(0).getPattern());
   }
 }
