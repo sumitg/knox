@@ -41,22 +41,23 @@ public class OozieDeploymentContributor extends ServiceDeploymentContributorBase
   private static final String REPLAY_BUFFER_SIZE_PARAM = "replayBufferSize";
   
   // Oozie replay buffer size in KB
-  private static final String DEFAULT_REPLAY_BUFFER_SIZE = "8";
+  private static final String OOZIW_REPLAY_BUFFER_SIZE = "8";
 
   @Override
   public String getRole() {
-    return "OOZIE";
+    return "xOOZIE";
   }
 
   @Override
   public String getName() {
-    return "oozie";
+    return "xoozie";
   }
 
   @Override
   public void contributeService( DeploymentContext context, Service service ) throws Exception {
-    contributeRewriteRules( context, service );
-    contributeResources( context, service );
+    //TODO: [sumit] remove once stacks is done KNOX-483
+//    contributeRewriteRules( context, service );
+//    contributeResources( context, service );
   }
 
   private void contributeRewriteRules( DeploymentContext context, Service service ) throws URISyntaxException, IOException {
@@ -106,7 +107,13 @@ public class OozieDeploymentContributor extends ServiceDeploymentContributorBase
 
   private void addDispatchFilter(DeploymentContext context, Service service,
       ResourceDescriptor resource) {
-    context.contributeFilter(service, resource, "dispatch", "http-client", null );
+    //TODO: [sumit] set the filter params for dispatch in stacks
+    List<FilterParamDescriptor> filterParams = new ArrayList<FilterParamDescriptor>();
+    FilterParamDescriptor filterParamDescriptor = resource.createFilterParam();
+    filterParamDescriptor.name(REPLAY_BUFFER_SIZE_PARAM);
+    filterParamDescriptor.value(OOZIW_REPLAY_BUFFER_SIZE);
+    filterParams.add(filterParamDescriptor);
+    context.contributeFilter(service, resource, "dispatch", "http-client", filterParams);
   }
 
   UrlRewriteRulesDescriptor loadRulesFromTemplate() throws IOException {
