@@ -164,6 +164,11 @@ public class GatewayConfigImpl extends Configuration implements GatewayConfig {
   }
 
   @Override
+  public String getGatewayStacksDir() {
+    return getVar( GATEWAY_DATA_HOME_VAR, getGatewayHomeDir() + File.separator + "stacks" );
+  }
+
+  @Override
   public String getHadoopConfDir() {
     return get( HADOOP_CONF_DIR );
   }
