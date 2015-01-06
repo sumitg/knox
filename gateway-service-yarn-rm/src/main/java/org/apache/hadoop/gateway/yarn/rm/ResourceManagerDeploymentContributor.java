@@ -46,19 +46,20 @@ public class ResourceManagerDeploymentContributor extends
 
   @Override
   public String getRole() {
-    return "RESOURCEMANAGER";
+    return "xRESOURCEMANAGER";
   }
 
   @Override
   public String getName() {
-    return "resourcemanager";
+    return "xresourcemanager";
   }
 
   @Override
   public void contributeService(DeploymentContext context, Service service)
       throws Exception {
-    contributeRewriteRules( context, service );
-    contributeResources( context, service );
+      //TODO: [sumit] delete when done with Stacks work KNOX-481
+//    contributeRewriteRules( context, service );
+//    contributeResources( context, service );
   }
 
   private void contributeRewriteRules(DeploymentContext context, Service service)
