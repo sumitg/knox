@@ -124,6 +124,9 @@ public interface GatewayMessages {
   @Message( level = MessageLevel.WARN, text = "Ignoring service deployment contributor with invalid null role: {0}" )
   void ignoringServiceContributorWithMissingRole( String className );
 
+  @Message( level = MessageLevel.WARN, text = "Ignoring service deployment contributor with invalid null version: {0}" )
+  void ignoringServiceContributorWithMissingVersion( String className );
+
   @Message( level = MessageLevel.WARN, text = "Ignoring provider deployment contributor with invalid null name: {0}" )
   void ignoringProviderContributorWithMissingName( String className );
 
@@ -325,4 +328,7 @@ public interface GatewayMessages {
 
   @Message( level = MessageLevel.INFO, text = "Computed roles/groups: {0} for principal: {1}" )
   void lookedUpUserRoles(Set<String> roleNames, String userName);
+
+  @Message( level = MessageLevel.INFO, text = "Configured stacks directory is {0}" )
+  void usingStacksDirectory(String path);
 }
