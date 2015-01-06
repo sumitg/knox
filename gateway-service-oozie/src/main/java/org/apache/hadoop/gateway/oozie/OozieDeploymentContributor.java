@@ -45,18 +45,19 @@ public class OozieDeploymentContributor extends ServiceDeploymentContributorBase
 
   @Override
   public String getRole() {
-    return "OOZIE";
+    return "xOOZIE";
   }
 
   @Override
   public String getName() {
-    return "oozie";
+    return "xoozie";
   }
 
   @Override
   public void contributeService( DeploymentContext context, Service service ) throws Exception {
-    contributeRewriteRules( context, service );
-    contributeResources( context, service );
+    //TODO: [sumit] remove once stacks is done KNOX-483
+//    contributeRewriteRules( context, service );
+//    contributeResources( context, service );
   }
 
   private void contributeRewriteRules( DeploymentContext context, Service service ) throws URISyntaxException, IOException {
@@ -106,6 +107,7 @@ public class OozieDeploymentContributor extends ServiceDeploymentContributorBase
 
   private void addDispatchFilter(DeploymentContext context, Service service,
       ResourceDescriptor resource) {
+    //TODO: [sumit] set the filter params for dispatch in stacks
     List<FilterParamDescriptor> filterParams = new ArrayList<FilterParamDescriptor>();
     FilterParamDescriptor filterParamDescriptor = resource.createFilterParam();
     filterParamDescriptor.name(REPLAY_BUFFER_SIZE_PARAM);
