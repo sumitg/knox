@@ -19,6 +19,6 @@ package org.apache.hadoop.gateway.config;
 
 public interface ConfigurationAdapter {
 
-  String getConfigurationValue(String name) throws ConfigurationException;
+  Object getConfigurationValue(String name) throws ConfigurationException;
 
 }

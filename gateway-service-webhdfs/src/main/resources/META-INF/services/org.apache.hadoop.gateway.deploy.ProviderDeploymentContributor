@@ -17,4 +17,3 @@
 ##########################################################################
 
 org.apache.hadoop.gateway.hdfs.NameNodeHaDispatchDeploymentContributor
-org.apache.hadoop.gateway.hdfs.WebHdfsDispatchDeploymentContributor

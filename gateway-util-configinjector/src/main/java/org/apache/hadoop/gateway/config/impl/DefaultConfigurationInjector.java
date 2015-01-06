@@ -120,7 +120,7 @@ public class DefaultConfigurationInjector implements ConfigurationInjector {
     }
   }
 
-  private Object convertValue( Object target, String name, String strValue, Class<?> type ) {
+  private Object convertValue( Object target, String name, Object strValue, Class<?> type ) {
     Object objValue = null;
     try {
       objValue = DEFAULT_CONVERTER.convert( strValue, type );
@@ -133,16 +133,16 @@ public class DefaultConfigurationInjector implements ConfigurationInjector {
   }
 
   private Object retrieveValue( Object target, String bind, String name, Class<?> type, ConfigurationAdapter adapter, ConfigurationBinding binding ) {
-    String strValue = null;
+    Object value;
     try {
-      strValue = adapter.getConfigurationValue( bind );
+      value = adapter.getConfigurationValue( bind );
     } catch( Exception e ) {
       throw new ConfigurationException( String.format(
           "Failed to retrieve configuration for %s bound to %s of %s via %s",
           bind, name, target.getClass().getName(), adapter.getClass().getName() ), e );
     }
-    Object objValue = convertValue( target, name, strValue, type );
-    return objValue;
+    value = convertValue( target, name, value, type );
+    return value;
   }
 
   private <T extends Annotation> T findAnnotation( Annotation[] annotations, Class<T> type ) {

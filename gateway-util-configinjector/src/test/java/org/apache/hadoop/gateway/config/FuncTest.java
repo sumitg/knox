@@ -216,7 +216,7 @@ public class FuncTest {
 
   public class Adapter implements ConfigurationAdapter {
     @Override
-    public String getConfigurationValue( String name ) throws ConfigurationException {
+    public Object getConfigurationValue( String name ) throws ConfigurationException {
       return System.getProperty( name );
     }
   }

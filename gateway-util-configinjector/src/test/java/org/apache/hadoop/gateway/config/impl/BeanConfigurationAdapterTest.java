@@ -34,7 +34,7 @@ public class BeanConfigurationAdapterTest {
   public void test() {
     Bean bean = new Bean();
     BeanConfigurationAdapter adapter = new BeanConfigurationAdapter( bean );
-    assertThat( adapter.getConfigurationValue( "value" ), is( "beanValue" ) );
+    assertThat( adapter.getConfigurationValue( "value" ).toString(), is( "beanValue" ) );
   }
 
 }

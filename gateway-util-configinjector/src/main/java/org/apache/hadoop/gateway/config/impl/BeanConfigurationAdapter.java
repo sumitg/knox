@@ -30,14 +30,11 @@ public class BeanConfigurationAdapter implements ConfigurationAdapter {
   }
 
   @Override
-  public String getConfigurationValue( String name ) throws ConfigurationException {
+  public Object getConfigurationValue( String name ) throws ConfigurationException {
     try {
-      Object obj = PropertyUtils.getSimpleProperty( bean, name );
-      String str = obj != null ? obj.toString() : null;
-      return str;
+      return PropertyUtils.getSimpleProperty( bean, name );
     } catch( Exception e ) {
       throw new ConfigurationException( String.format( "" ), e );
     }
   }
-
 }
