@@ -38,10 +38,6 @@ public class ServiceDefinition {
 
   private CustomDispatch dispatch;
 
-  private List<PolicyBinding> policyBindings;
-
-  private CustomDispatch dispatch;
-
   @XmlAttribute
   public String getName() {
     return name;
@@ -87,25 +83,6 @@ public class ServiceDefinition {
 
   public void setPolicies(List<Policy> policies) {
     this.policies = policies;
-  }
-
-  @XmlElement(name = "dispatch")
-  public CustomDispatch getDispatch() {
-    return dispatch;
-  }
-
-  public void setDispatch(CustomDispatch dispatch) {
-    this.dispatch = dispatch;
-  }
-
-  @XmlElement(name = "policy")
-  @XmlElementWrapper(name = "policies")
-  public List<PolicyBinding> getPolicyBindings() {
-    return policyBindings;
-  }
-
-  public void setPolicyBindings(List<PolicyBinding> policyBindings) {
-    this.policyBindings = policyBindings;
   }
 
   @XmlElement(name = "dispatch")

@@ -28,7 +28,6 @@ import org.apache.hadoop.gateway.topology.Service;
 import org.apache.hadoop.gateway.topology.Topology;
 import org.apache.hadoop.test.log.NoOpAppender;
 import org.apache.log4j.Appender;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -505,7 +504,7 @@ public class DeploymentFactoryFuncTest {
 
     WebArchive war = DeploymentFactory.createDeployment( config, topology );
     Document doc = parse( war.get( "WEB-INF/gateway.xml" ).getAsset().openStream() );
-    //dump( doc );
+    dump( doc );
 
     Node resourceNode, filterNode, paramNode;
     String value;
