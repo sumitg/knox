@@ -56,7 +56,6 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
 
     @Override
     public void contributeService(DeploymentContext context, Service service) throws Exception {
-        System.out.println("contributing service def");
         contributeRewriteRules(context, service);
         contributeResources(context, service);
     }
