@@ -37,18 +37,18 @@ public class WebHCatDeploymentContributor extends ServiceDeploymentContributorBa
 
   @Override
   public String getRole() {
-    return "WEBHCAT";
+    return "xWEBHCAT";
   }
 
   @Override
   public String getName() {
-    return "webhcat";
+    return "xwebhcat";
   }
 
   @Override
   public void contributeService( DeploymentContext context, Service service ) throws Exception {
-    contributeRewriteRules( context, service );
-    contributeResources( context, service );
+//    contributeRewriteRules( context, service );
+//    contributeResources( context, service );
   }
 
   private void contributeRewriteRules( DeploymentContext context, Service service ) throws IOException {
