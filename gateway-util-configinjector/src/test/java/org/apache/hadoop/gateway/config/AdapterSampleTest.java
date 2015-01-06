@@ -37,7 +37,7 @@ public class AdapterSampleTest {
       this.config = config;
     }
     @Override
-    public String getConfigurationValue( String name ) throws ConfigurationException {
+    public Object getConfigurationValue( String name ) throws ConfigurationException {
       Object value = config.get( name.toUpperCase() );
       return value == null ? null : value.toString();
     }

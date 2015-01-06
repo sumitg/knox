@@ -268,7 +268,7 @@ public class DeploymentFactoryFuncTest {
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[6]/class", equalTo( "org.apache.hadoop.gateway.filter.AclsAuthorizationFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/role", equalTo( "dispatch" ) ) );
-    assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/name", equalTo( "hdfs" ) ) );
+    assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/name", equalTo( "webhdfs" ) ) );
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[2]/pattern", equalTo( "/webhdfs/v1/**?**" ) ) );
@@ -294,7 +294,7 @@ public class DeploymentFactoryFuncTest {
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[6]/class", equalTo( "org.apache.hadoop.gateway.filter.AclsAuthorizationFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/role", equalTo( "dispatch" ) ) );
-    assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/name", equalTo( "hdfs" ) ) );
+    assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/name", equalTo( "webhdfs" ) ) );
     assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter" ) ) );
   }
 
@@ -544,23 +544,6 @@ public class DeploymentFactoryFuncTest {
     return builder.parse( source );
   }
 
-  private void dump( Document document ) throws TransformerException {
-    Transformer transformer = TransformerFactory.newInstance().newTransformer();
-    transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
-    StreamResult result = new StreamResult( new StringWriter() );
-    DOMSource source = new DOMSource( document );
-    transformer.transform( source, result );
-    String xmlString = result.getWriter().toString();
-    System.out.println( xmlString );
-  }
-
-  private Node node( Node scope, String expression ) throws XPathExpressionException {
-    return (Node)XPathFactory.newInstance().newXPath().compile( expression ).evaluate( scope, XPathConstants.NODE );
-  }
-
-  private String value( Node scope, String expression ) throws XPathExpressionException {
-    return XPathFactory.newInstance().newXPath().compile( expression ).evaluate( scope );
-  }
   private void addStacksDir(GatewayConfig config, File targetDir) {
     File stacksDir = new File( config.getGatewayStacksDir() );
     stacksDir.mkdirs();
@@ -579,4 +562,31 @@ public class DeploymentFactoryFuncTest {
     }
 
   }
+//  private void dump( Document document ) throws TransformerException {
+//    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+//    transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+//    StreamResult result = new StreamResult( new StringWriter() );
+//    DOMSource source = new DOMSource( document );
+//    transformer.transform( source, result );
+//    String xmlString = result.getWriter().toString();
+//    System.out.println( xmlString );
+//  }
+  private void dump( Document document ) throws TransformerException {
+    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+    StreamResult result = new StreamResult( new StringWriter() );
+    DOMSource source = new DOMSource( document );
+    transformer.transform( source, result );
+    String xmlString = result.getWriter().toString();
+    System.out.println( xmlString );
+  }
+
+  private Node node( Node scope, String expression ) throws XPathExpressionException {
+    return (Node)XPathFactory.newInstance().newXPath().compile( expression ).evaluate( scope, XPathConstants.NODE );
+  }
+
+  private String value( Node scope, String expression ) throws XPathExpressionException {
+    return XPathFactory.newInstance().newXPath().compile( expression ).evaluate( scope );
+  }
+
 }

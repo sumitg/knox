@@ -18,5 +18,5 @@
     <routes>
         <route path="/hive"/>
     </routes>
-    <dispatch contributor-name="hive"/>
+    <dispatch classname="org.apache.hadoop.gateway.hive.HiveHttpClientDispatch"/>
 </service>

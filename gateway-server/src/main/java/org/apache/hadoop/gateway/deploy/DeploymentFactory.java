@@ -48,7 +48,6 @@ import java.util.*;
 public abstract class DeploymentFactory {
 
   private static final String DEFAULT_APP_REDIRECT_CONTEXT_PATH = "redirectTo";
-  private static final String STACKS_SERVICES_DIRECTORY = "services";
   private static GatewayMessages log = MessagesFactory.get( GatewayMessages.class );
   private static GatewayServices gatewayServices = null;
 
@@ -71,7 +70,8 @@ public abstract class DeploymentFactory {
     DeploymentContext context = null;
      //TODO move the loading of service defs
     String stacks = config.getGatewayStacksDir();
-    File stacksDir = new File(stacks, STACKS_SERVICES_DIRECTORY);
+    log.usingStacksDirectory(stacks);
+    File stacksDir = new File(stacks);
     Set<ServiceDeploymentContributor> deploymentContributors = ServiceDefinitionsLoader.loadServiceDefinitions(stacksDir);
     addServiceDeploymentContributors(deploymentContributors.iterator());
 

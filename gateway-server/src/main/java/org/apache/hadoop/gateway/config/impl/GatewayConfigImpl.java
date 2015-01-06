@@ -75,6 +75,8 @@ public class GatewayConfigImpl extends Configuration implements GatewayConfig {
 
   private static final String GATEWAY_CONFIG_FILE_PREFIX = "gateway";
 
+  private static final String STACKS_SERVICES_DIRECTORY = "services";
+
   public static final String[] GATEWAY_CONFIG_FILENAMES = {
       GATEWAY_CONFIG_DIR_PREFIX + "/" + GATEWAY_CONFIG_FILE_PREFIX + "-default.xml",
       GATEWAY_CONFIG_DIR_PREFIX + "/" + GATEWAY_CONFIG_FILE_PREFIX + "-site.xml"
@@ -175,29 +177,9 @@ public class GatewayConfigImpl extends Configuration implements GatewayConfig {
 
   @Override
   public String getGatewayStacksDir() {
-    return getVar( GATEWAY_DATA_HOME_VAR, getGatewayHomeDir() + File.separator + "stacks" );
+    return getGatewayDataDir() + File.separator + STACKS_SERVICES_DIRECTORY;
   }
-
-  @Override
-  public String getGatewayStacksDir() {
-    return getVar( GATEWAY_DATA_HOME_VAR, getGatewayHomeDir() + File.separator + "stacks" );
-  }
-
-  @Override
-  public String getGatewayStacksDir() {
-    return getVar( GATEWAY_DATA_HOME_VAR, getGatewayHomeDir() + File.separator + "stacks" );
-  }
-
-  @Override
-  public String getGatewayStacksDir() {
-    return getVar( GATEWAY_DATA_HOME_VAR, getGatewayHomeDir() + File.separator + "stacks" );
-  }
-
-  @Override
-  public String getGatewayStacksDir() {
-    return getVar( GATEWAY_DATA_HOME_VAR, getGatewayHomeDir() + File.separator + "stacks" );
-  }
-
+  
   @Override
   public String getHadoopConfDir() {
     return get( HADOOP_CONF_DIR );

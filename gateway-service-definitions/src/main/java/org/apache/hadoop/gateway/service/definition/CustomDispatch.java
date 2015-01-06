@@ -29,6 +29,8 @@ public class CustomDispatch {
 
   private String className;
 
+  private String haClassName;
+
   @XmlAttribute(name = "contributor-name")
   public String getContributorName() {
     return contributorName;
@@ -54,5 +56,14 @@ public class CustomDispatch {
 
   public void setClassName(String className) {
     this.className = className;
+  }
+
+  @XmlAttribute(name = "ha-classname")
+  public String getHaClassName() {
+    return haClassName;
+  }
+
+  public void setHaClassName(String haContributorClassName) {
+    this.haClassName = haContributorClassName;
   }
 }

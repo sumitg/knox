@@ -16,13 +16,6 @@
    limitations under the License.
 -->
 <service role="WEBHDFS" name="webhdfs" version="2.4.0">
-    <policies>
-        <policy role="webappsec"/>
-        <policy role="authentication"/>
-        <policy role="rewrite"/>
-        <policy role="identity-assertion"/>
-        <policy role="authorization"/>
-    </policies>
     <routes>
         <route path="/webhdfs/v1/?**">
             <rewrite apply="WEBHDFS/webhdfs/inbound/namenode/root" to="request.url"/>
@@ -43,5 +36,5 @@
             <dispatch contributor-name="http-client" />
         </route>
     </routes>
-    <dispatch contributor-name="hdfs" ha-contributor-name="ha-hdfs"/>
+    <dispatch classname="org.apache.hadoop.gateway.hdfs.dispatch.HdfsDispatch" ha-classname="org.apache.hadoop.gateway.hdfs.dispatch.WebHdfsHaHttpClientDispatch"/>
 </service>
