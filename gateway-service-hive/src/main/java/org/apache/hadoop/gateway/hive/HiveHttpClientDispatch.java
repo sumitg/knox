@@ -52,12 +52,13 @@ public class HiveHttpClientDispatch extends HttpClientDispatch {
   private static final EmptyJaasCredentials EMPTY_JAAS_CREDENTIALS = new EmptyJaasCredentials();
 
   @Override
-  public void init( FilterConfig filterConfig ) throws ServletException {
-    super.init( filterConfig );
-    String basicAuthPreemptiveString = filterConfig.getInitParameter( BASIC_AUTH_PREEMPTIVE_PARAM );
-    if( basicAuthPreemptiveString != null ) {
-      setBasicAuthPreemptive( Boolean.parseBoolean( basicAuthPreemptiveString ) );
-    }
+  public void init() {
+    super.init();
+    //TODO: [sumit] get config passed in
+//    String basicAuthPreemptiveString = filterConfig.getInitParameter( BASIC_AUTH_PREEMPTIVE_PARAM );
+//    if( basicAuthPreemptiveString != null ) {
+//      setBasicAuthPreemptive( Boolean.parseBoolean( basicAuthPreemptiveString ) );
+//    }
   }
 
   protected Principal getPrimaryPrincipal() {

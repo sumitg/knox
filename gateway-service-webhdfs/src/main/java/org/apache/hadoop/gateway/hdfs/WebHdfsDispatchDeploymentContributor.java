@@ -19,8 +19,10 @@ package org.apache.hadoop.gateway.hdfs;
 
 import org.apache.hadoop.gateway.deploy.DeploymentContext;
 import org.apache.hadoop.gateway.deploy.ProviderDeploymentContributorBase;
+import org.apache.hadoop.gateway.descriptor.FilterDescriptor;
 import org.apache.hadoop.gateway.descriptor.FilterParamDescriptor;
 import org.apache.hadoop.gateway.descriptor.ResourceDescriptor;
+import org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter;
 import org.apache.hadoop.gateway.hdfs.dispatch.HdfsDispatch;
 import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
@@ -28,6 +30,8 @@ import org.apache.hadoop.gateway.topology.Service;
 import java.util.List;
 
 public class WebHdfsDispatchDeploymentContributor extends ProviderDeploymentContributorBase {
+
+  private static final String DISPATCH_IMPL_PARAM = "dispatch-impl";
 
   @Override
   public String getRole() {
@@ -41,7 +45,8 @@ public class WebHdfsDispatchDeploymentContributor extends ProviderDeploymentCont
 
   @Override
   public void contributeFilter( DeploymentContext context, Provider provider, Service service, ResourceDescriptor resource, List<FilterParamDescriptor> params ) {
-    resource.addFilter().role( getRole() ).name( getName() ).impl( HdfsDispatch.class ).params(params);
+    FilterDescriptor filter = resource.addFilter().role( getRole() ).name( getName() ).impl( GatewayDispatchFilter.class ).params(params);
+    filter.param().name(DISPATCH_IMPL_PARAM).value(HdfsDispatch.class.getName());
   }
 
 }

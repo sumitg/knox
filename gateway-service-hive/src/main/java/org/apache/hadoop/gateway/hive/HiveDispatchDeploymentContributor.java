@@ -24,6 +24,7 @@ import org.apache.hadoop.gateway.deploy.ProviderDeploymentContributorBase;
 import org.apache.hadoop.gateway.descriptor.FilterDescriptor;
 import org.apache.hadoop.gateway.descriptor.FilterParamDescriptor;
 import org.apache.hadoop.gateway.descriptor.ResourceDescriptor;
+import org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter;
 import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
 
@@ -33,7 +34,9 @@ import org.apache.hadoop.gateway.topology.Service;
 public class HiveDispatchDeploymentContributor extends ProviderDeploymentContributorBase {
   
   private static final String REPLAY_BUFFER_SIZE_PARAM = "replayBufferSize";
-  
+
+  private static final String DISPATCH_IMPL_PARAM = "dispatch-impl";
+
   // Default global replay buffer size in KB
   public static final String DEFAULT_REPLAY_BUFFER_SIZE = "4";
 
@@ -58,7 +61,8 @@ public class HiveDispatchDeploymentContributor extends ProviderDeploymentContrib
         }
       }
     }
-    FilterDescriptor filter = resource.addFilter().name( getName() ).role( getRole() ).impl( HiveHttpClientDispatch.class );
+    FilterDescriptor filter = resource.addFilter().name( getName() ).role( getRole() ).impl( GatewayDispatchFilter.class );
+    filter.param().name(DISPATCH_IMPL_PARAM).value(HiveHttpClientDispatch.class.getName());
     filter.param().name("replayBufferSize").value(replayBufferSize);
     if( context.getGatewayConfig().isHadoopKerberosSecured() ) {
       filter.param().name("kerberos").value("true");
