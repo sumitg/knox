@@ -67,16 +67,16 @@ public class WebHdfsHaHttpClientDispatch extends HdfsDispatch {
   }
 
    @Override
-   public void init(FilterConfig filterConfig) throws ServletException {
-      super.init(filterConfig);
-      resourceRole = filterConfig.getInitParameter(RESOURCE_ROLE_ATTRIBUTE);
-      LOG.initializingForResourceRole(resourceRole);
-      haProvider = HaServletContextListener.getHaProvider(filterConfig.getServletContext());
-      HaServiceConfig serviceConfig = haProvider.getHaDescriptor().getServiceConfig(resourceRole);
-      maxFailoverAttempts = serviceConfig.getMaxFailoverAttempts();
-      failoverSleep = serviceConfig.getFailoverSleep();
-      maxRetryAttempts = serviceConfig.getMaxRetryAttempts();
-      retrySleep = serviceConfig.getRetrySleep();
+   public void init() {
+     super.init();
+//      resourceRole = filterConfig.getInitParameter(RESOURCE_ROLE_ATTRIBUTE);
+//      LOG.initializingForResourceRole(resourceRole);
+//      haProvider = HaServletContextListener.getHaProvider(filterConfig.getServletContext());
+//      HaServiceConfig serviceConfig = haProvider.getHaDescriptor().getServiceConfig(resourceRole);
+//      maxFailoverAttempts = serviceConfig.getMaxFailoverAttempts();
+//      failoverSleep = serviceConfig.getFailoverSleep();
+//      maxRetryAttempts = serviceConfig.getMaxRetryAttempts();
+//      retrySleep = serviceConfig.getRetrySleep();
    }
 
    @Override
@@ -174,4 +174,16 @@ public class WebHdfsHaHttpClientDispatch extends HdfsDispatch {
          }
       }
    }
+
+  private static URI getDispatchUrl(HttpServletRequest request) {
+    StringBuffer str = request.getRequestURL();
+    String query = request.getQueryString();
+    if ( query != null ) {
+      str.append('?');
+      str.append(query);
+    }
+    URI url = URI.create(str.toString());
+    return url;
+  }
+
 }
