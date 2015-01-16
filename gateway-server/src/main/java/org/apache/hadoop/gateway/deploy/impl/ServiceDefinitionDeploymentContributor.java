@@ -19,9 +19,12 @@ package org.apache.hadoop.gateway.deploy.impl;
 
 import org.apache.hadoop.gateway.deploy.DeploymentContext;
 import org.apache.hadoop.gateway.deploy.ServiceDeploymentContributorBase;
+import org.apache.hadoop.gateway.descriptor.FilterDescriptor;
 import org.apache.hadoop.gateway.descriptor.FilterParamDescriptor;
 import org.apache.hadoop.gateway.descriptor.ResourceDescriptor;
+import org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter;
 import org.apache.hadoop.gateway.filter.rewrite.api.UrlRewriteRulesDescriptor;
+import org.apache.hadoop.gateway.service.definition.CustomDispatch;
 import org.apache.hadoop.gateway.service.definition.RewriteFilter;
 import org.apache.hadoop.gateway.service.definition.ServiceDefinition;
 import org.apache.hadoop.gateway.service.definition.UrlBinding;
@@ -35,73 +38,91 @@ import java.util.Map;
 
 public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentContributorBase {
 
-    private ServiceDefinition serviceDefinition;
+  private static final String DISPATCH_ROLE = "dispatch";
 
-    private UrlRewriteRulesDescriptor serviceRules;
+  private static final String DISPATCH_IMPL_PARAM = "dispatch-impl";
 
-    public ServiceDefinitionDeploymentContributor(ServiceDefinition serviceDefinition, UrlRewriteRulesDescriptor serviceRules) {
-        this.serviceDefinition = serviceDefinition;
-        this.serviceRules = serviceRules;
+  private ServiceDefinition serviceDefinition;
+
+  private UrlRewriteRulesDescriptor serviceRules;
+
+  public ServiceDefinitionDeploymentContributor(ServiceDefinition serviceDefinition, UrlRewriteRulesDescriptor serviceRules) {
+    this.serviceDefinition = serviceDefinition;
+    this.serviceRules = serviceRules;
+  }
+
+  @Override
+  public String getRole() {
+    return serviceDefinition.getRole();
+  }
+
+  @Override
+  public String getName() {
+    return serviceDefinition.getName();
+  }
+
+  @Override
+  public void contributeService(DeploymentContext context, Service service) throws Exception {
+    contributeRewriteRules(context, service);
+    contributeResources(context, service);
+  }
+
+  private void contributeRewriteRules(DeploymentContext context, Service service) {
+    if ( serviceRules != null ) {
+      UrlRewriteRulesDescriptor clusterRules = context.getDescriptor("rewrite");
+      clusterRules.addRules(serviceRules);
     }
+  }
 
-    @Override
-    public String getRole() {
-        return serviceDefinition.getRole();
-    }
-
-    @Override
-    public String getName() {
-        return serviceDefinition.getName();
-    }
-
-    @Override
-    public void contributeService(DeploymentContext context, Service service) throws Exception {
-        contributeRewriteRules(context, service);
-        contributeResources(context, service);
-    }
-
-    private void contributeRewriteRules(DeploymentContext context, Service service) {
-        if (serviceRules != null) {
-            UrlRewriteRulesDescriptor clusterRules = context.getDescriptor("rewrite");
-            clusterRules.addRules(serviceRules);
+  private void contributeResources(DeploymentContext context, Service service) {
+    Map<String, String> filterParams = new HashMap<String, String>();
+    List<UrlBinding> bindings = serviceDefinition.getUrlBindings();
+    for ( UrlBinding binding : bindings ) {
+      List<RewriteFilter> filters = binding.getRewriteFilters();
+      if ( filters != null && !filters.isEmpty() ) {
+        filterParams.clear();
+        for ( RewriteFilter filter : filters ) {
+          filterParams.put(filter.getApplyTo(), filter.getRef());
         }
+      }
+      try {
+        contributeResource(context, service, binding.getPattern(), filterParams);
+      } catch ( URISyntaxException e ) {
+        e.printStackTrace();
+      }
     }
 
-    private void contributeResources(DeploymentContext context, Service service) {
-        Map<String, String> filterParams = new HashMap<String, String>();
-        List<UrlBinding> bindings = serviceDefinition.getUrlBindings();
-        for (UrlBinding binding : bindings) {
-            List<RewriteFilter> filters = binding.getRewriteFilters();
-            if (filters != null && !filters.isEmpty()) {
-                filterParams.clear();
-                for (RewriteFilter filter : filters) {
-                    filterParams.put(filter.getApplyTo(), filter.getRef());
-                }
-            }
-            try {
-                contributeResource(context, service, binding.getPattern(), filterParams);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+  }
+
+  private void contributeResource(DeploymentContext context, Service service, String pattern, Map<String, String> filterParams) throws URISyntaxException {
+    List<FilterParamDescriptor> params = new ArrayList<FilterParamDescriptor>();
+    ResourceDescriptor resource = context.getGatewayDescriptor().addResource();
+    resource.role(service.getRole());
+    resource.pattern(pattern);
+    addWebAppSecFilters(context, service, resource);
+    addAuthenticationFilter(context, service, resource);
+    addIdentityAssertionFilter(context, service, resource);
+    addAuthorizationFilter(context, service, resource);
+    if ( !filterParams.isEmpty() ) {
+      for ( Map.Entry<String, String> filterParam : filterParams.entrySet() ) {
+        params.add(resource.createFilterParam().name(filterParam.getKey()).value(filterParam.getValue()));
+      }
+    }
+    addRewriteFilter(context, service, resource, params);
+    CustomDispatch customDispatch = serviceDefinition.getDispatch();
+    if (customDispatch != null) {
+      String contributorName = customDispatch.getContributorName();
+      if (contributorName != null) {
+        addDispatchFilter(context, service, resource, DISPATCH_ROLE, contributorName);
+      } else {
+        String className = customDispatch.getClassName();
+        if (className != null) {
+          FilterDescriptor filter = resource.addFilter().name( getName() ).role( DISPATCH_ROLE ).impl( GatewayDispatchFilter.class );
+          filter.param().name(DISPATCH_IMPL_PARAM).value(className);
         }
-
+      }
+    } else {
+      addDispatchFilter(context, service, resource, DISPATCH_ROLE, "http-client");
     }
-
-    private void contributeResource(DeploymentContext context, Service service, String pattern, Map<String, String> filterParams) throws URISyntaxException {
-        List<FilterParamDescriptor> params = new ArrayList<FilterParamDescriptor>();
-        ResourceDescriptor resource = context.getGatewayDescriptor().addResource();
-        resource.role(service.getRole());
-        resource.pattern(pattern);
-        addWebAppSecFilters(context, service, resource);
-        addAuthenticationFilter(context, service, resource);
-        addIdentityAssertionFilter(context, service, resource);
-        addAuthorizationFilter(context, service, resource);
-        if (!filterParams.isEmpty()) {
-            for (Map.Entry<String, String> filterParam : filterParams.entrySet()) {
-                params.add(resource.createFilterParam().name(filterParam.getKey()).value(filterParam.getValue()));
-            }
-        }
-        addRewriteFilter( context, service, resource, params );
-        addDispatchFilter( context, service, resource, "dispatch", "http-client" );
-    }
+  }
 }
