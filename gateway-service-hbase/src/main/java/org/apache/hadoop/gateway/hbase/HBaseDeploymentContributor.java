@@ -40,12 +40,12 @@ public class HBaseDeploymentContributor extends ServiceDeploymentContributorBase
 
   @Override 
   public String getRole() {
-    return "WEBHBASE";
+    return "xWEBHBASE";
   }
 
   @Override
   public String getName() {
-    return "webhbase";
+    return "xwebhbase";
   }
 
   @Override

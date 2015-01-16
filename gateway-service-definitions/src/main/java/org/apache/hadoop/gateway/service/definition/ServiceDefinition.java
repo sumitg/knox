@@ -34,6 +34,8 @@ public class ServiceDefinition {
 
   private List<UrlBinding> urlBindings;
 
+  private CustomDispatch dispatch;
+
   @XmlAttribute
   public String getName() {
     return name;
@@ -69,5 +71,14 @@ public class ServiceDefinition {
 
   public void setUrlBindings(List<UrlBinding> urlBindings) {
     this.urlBindings = urlBindings;
+  }
+
+  @XmlElement(name = "dispatch")
+  public CustomDispatch getDispatch() {
+    return dispatch;
+  }
+
+  public void setDispatch(CustomDispatch dispatch) {
+    this.dispatch = dispatch;
   }
 }
