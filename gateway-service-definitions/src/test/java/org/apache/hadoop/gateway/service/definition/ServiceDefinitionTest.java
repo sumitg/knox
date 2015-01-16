@@ -42,5 +42,9 @@ public class ServiceDefinitionTest {
     assertNotNull(bindings);
     assertEquals(12, bindings.size());
     assertNotNull(bindings.get(0).getPattern());
+    url = ClassLoader.getSystemResource("services/hbase/0.98.0/service.xml");
+    definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
+    assertNotNull(definition.getDispatch());
+    assertEquals("hbase", definition.getDispatch().getContributorName());
   }
 }
