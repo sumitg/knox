@@ -29,8 +29,8 @@ import java.net.URISyntaxException;
 
 public class HiveDeploymentContributor extends ServiceDeploymentContributorBase {
 
-  private static final String ROLE = "HIVE";
-  private static final String NAME = "hive";
+  private static final String ROLE = "xHIVE";
+  private static final String NAME = "xhive";
   private static final String EXTERNAL_PATH = "/hive";
 
   @Override

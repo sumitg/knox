@@ -19,8 +19,10 @@ package org.apache.hadoop.gateway.hdfs;
 
 import org.apache.hadoop.gateway.deploy.DeploymentContext;
 import org.apache.hadoop.gateway.deploy.ProviderDeploymentContributorBase;
+import org.apache.hadoop.gateway.descriptor.FilterDescriptor;
 import org.apache.hadoop.gateway.descriptor.FilterParamDescriptor;
 import org.apache.hadoop.gateway.descriptor.ResourceDescriptor;
+import org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter;
 import org.apache.hadoop.gateway.hdfs.dispatch.WebHdfsHaHttpClientDispatch;
 import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
@@ -35,7 +37,9 @@ public class NameNodeHaDispatchDeploymentContributor extends ProviderDeploymentC
 
    private static final String NAME = "ha-hdfs";
 
-   @Override
+   private static final String DISPATCH_IMPL_PARAM = "dispatch-impl";
+
+  @Override
    public String getRole() {
       return ROLE;
    }
@@ -55,6 +59,8 @@ public class NameNodeHaDispatchDeploymentContributor extends ProviderDeploymentC
       for (Map.Entry<String, String> entry : providerParams.entrySet()) {
          params.add(resource.createFilterParam().name(entry.getKey().toLowerCase()).value(entry.getValue()));
       }
-      resource.addFilter().name(getName()).role(getRole()).impl(WebHdfsHaHttpClientDispatch.class).params(params);
+      FilterDescriptor filter = resource.addFilter().name(getName()).role(getRole()).impl(GatewayDispatchFilter.class).params(params);
+      filter.param().name(DISPATCH_IMPL_PARAM).value(WebHdfsHaHttpClientDispatch.class.getName());
+
    }
 }
