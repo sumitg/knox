@@ -251,7 +251,7 @@ public class DeploymentFactoryFuncTest {
 
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/role", equalTo( "dispatch" ) ) );
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/name", equalTo( "hdfs" ) ) );
-    assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.hdfs.dispatch.HdfsDispatch" ) ) );
+    assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[2]/pattern", equalTo( "/webhdfs/v1/**?**" ) ) );
     //assertThat( gateway, hasXPath( "/gateway/resource[2]/target", equalTo( "http://localhost:50070/webhdfs/v1/{path=**}?{**}" ) ) );
@@ -277,7 +277,7 @@ public class DeploymentFactoryFuncTest {
 
     assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/role", equalTo( "dispatch" ) ) );
     assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/name", equalTo( "hdfs" ) ) );
-    assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.hdfs.dispatch.HdfsDispatch" ) ) );
+    assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter" ) ) );
   }
 
 

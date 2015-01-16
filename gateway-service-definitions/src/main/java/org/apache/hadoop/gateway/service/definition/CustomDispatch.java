@@ -15,24 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.hadoop.gateway.hbase;
+package org.apache.hadoop.gateway.service.definition;
 
-import org.apache.hadoop.gateway.dispatch.HttpClientDispatch;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+@XmlType(name = "dispatch")
+public class CustomDispatch {
 
-/**
- * This specialized dispatch provides HBase specific features to the
- * default HttpClientDispatch.
- */
-public class HBaseHttpClientDispatch extends HttpClientDispatch {
+  private String contributorName;
 
-  @Override
-  public void init() {
-    super.init();
-    setAppCookieManager(new HBaseCookieManager());
+  private String className;
+
+  @XmlAttribute(name = "contributor-name")
+  public String getContributorName() {
+    return contributorName;
   }
 
-}
+  public void setContributorName(String contributorName) {
+    this.contributorName = contributorName;
+  }
 
+  @XmlAttribute(name = "classname")
+  public String getClassName() {
+    return className;
+  }
+
+  public void setClassName(String className) {
+    this.className = className;
+  }
+}

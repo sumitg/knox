@@ -43,6 +43,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpOptions;
@@ -59,7 +60,6 @@ import org.apache.http.message.BasicHeader;
  */
 public class HttpClientDispatch extends AbstractGatewayDispatch {
 
-   private static final String REPLAY_BUFFER_SIZE = "replayBufferSize";
 
    // private static final String CT_APP_WWW_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
    // private static final String CT_APP_XML = "application/xml";
@@ -82,21 +82,30 @@ public class HttpClientDispatch extends AbstractGatewayDispatch {
 
    private int replayBufferSize = 0;
 
-   @Override
-   public void init(FilterConfig filterConfig) throws ServletException {
-      this.init(filterConfig, new AppCookieManager());
-   }
+  @Override
+  public void init() {
+    setAppCookieManager(new AppCookieManager());
+  }
 
-   protected void init(FilterConfig filterConfig, AppCookieManager cookieManager) throws ServletException {
-      super.init(filterConfig);
-      appCookieManager = cookieManager;
-      String replayBufferSizeString = filterConfig.getInitParameter(REPLAY_BUFFER_SIZE_PARAM);
-      if (replayBufferSizeString != null) {
-         setReplayBufferSize(Integer.valueOf(replayBufferSizeString));
-      }
-   }
+  @Override
+  public void destroy() {
 
-   protected void executeRequest(
+  }
+
+  public void setAppCookieManager(AppCookieManager appCookieManager) {
+    this.appCookieManager = appCookieManager;
+  }
+
+//   protected void init(FilterConfig filterConfig, AppCookieManager cookieManager) throws ServletException {
+//      super.init(filterConfig);
+//      appCookieManager = cookieManager;
+//      String replayBufferSizeString = filterConfig.getInitParameter(REPLAY_BUFFER_SIZE_PARAM);
+//      if (replayBufferSizeString != null) {
+//         setReplayBufferSize(Integer.valueOf(replayBufferSizeString));
+//      }
+//   }
+
+  protected void executeRequest(
          HttpUriRequest outboundRequest,
          HttpServletRequest inboundRequest,
          HttpServletResponse outboundResponse)
@@ -108,7 +117,6 @@ public class HttpClientDispatch extends AbstractGatewayDispatch {
    protected HttpResponse executeOutboundRequest(HttpUriRequest outboundRequest) throws IOException {
       LOG.dispatchRequest(outboundRequest.getMethod(), outboundRequest.getURI());
       HttpResponse inboundResponse = null;
-      DefaultHttpClient client = new DefaultHttpClient();
 
       try {
          String query = outboundRequest.getURI().getQuery();
@@ -191,7 +199,7 @@ public class HttpClientDispatch extends AbstractGatewayDispatch {
    }
 
    protected HttpResponse executeKerberosDispatch(HttpUriRequest outboundRequest,
-                                                  DefaultHttpClient client) throws IOException, ClientProtocolException {
+                                                  HttpClient client) throws IOException, ClientProtocolException {
       HttpResponse inboundResponse;
       outboundRequest.removeHeaders(COOKIE);
       String appCookie = appCookieManager.getCachedAppCookie();
