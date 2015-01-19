@@ -28,6 +28,7 @@ import org.apache.hadoop.gateway.topology.Service;
 import org.apache.hadoop.gateway.topology.Topology;
 import org.apache.hadoop.test.log.NoOpAppender;
 import org.apache.log4j.Appender;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -82,6 +83,7 @@ public class DeploymentFactoryFuncTest {
 
 //    ((GatewayTestConfig) config).setDeploymentDir( "clusters" );
 
+    addStacksDir(config, gatewayDir);
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
     options.put("persist-master", "false");
@@ -135,6 +137,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir( gatewayDir.getAbsolutePath() );
     File deployDir = new File( config.getGatewayDeploymentDir() );
     deployDir.mkdirs();
+    addStacksDir(config, gatewayDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
@@ -189,6 +192,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir( gatewayDir.getAbsolutePath() );
     File deployDir = new File( config.getGatewayDeploymentDir() );
     deployDir.mkdirs();
+    addStacksDir(config, gatewayDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
@@ -228,8 +232,8 @@ public class DeploymentFactoryFuncTest {
     topology.addProvider( authorizer );
 
     WebArchive war = DeploymentFactory.createDeployment( config, topology );
-    //File dir = new File( System.getProperty( "user.dir" ) );
-    //File file = war.as( ExplodedExporter.class ).exportExploded( dir, "test-cluster.war" );
+//    File dir = new File( System.getProperty( "user.dir" ) );
+//    File file = war.as( ExplodedExporter.class ).exportExploded( dir, "test-cluster.war" );
 
     Document web = parse( war.get( "WEB-INF/web.xml" ).getAsset().openStream() );
     assertThat( web, hasXPath( "/web-app/servlet/servlet-name", equalTo( "test-cluster" ) ) );
@@ -555,5 +559,22 @@ public class DeploymentFactoryFuncTest {
   private String value( Node scope, String expression ) throws XPathExpressionException {
     return XPathFactory.newInstance().newXPath().compile( expression ).evaluate( scope );
   }
+  private void addStacksDir(GatewayConfig config, File targetDir) {
+    File stacksDir = new File( config.getGatewayStacksDir() );
+    stacksDir.mkdirs();
+    //TODO: [sumit] This is a hack for now, need to find a better way to locate the source resources for 'stacks' to be tested
+    String pathToStacksSource = "gateway-service-definitions/src/main/resources/services";
+    File stacksSourceDir = new File( targetDir.getParent(), pathToStacksSource);
+    if (!stacksSourceDir.exists()) {
+      stacksSourceDir = new File( targetDir.getParentFile().getParent(), pathToStacksSource);
+    }
+    if (stacksSourceDir.exists()) {
+      try {
+        FileUtils.copyDirectoryToDirectory(stacksSourceDir, stacksDir);
+      } catch ( IOException e) {
+        fail(e.getMessage());
+      }
+    }
 
+  }
 }
