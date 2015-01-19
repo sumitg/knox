@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<service role="WEBHDFS" name="webhdfs" version="2.4.0">
+    <urls>
+        <url pattern="/webhdfs/v1/?**">
+            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/root" apply-to="request.url"/>
+        </url>
+        <url pattern="/webhdfs/v1/**?**">
+            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/file" apply-to="request.url"/>
+            <rewrite-filter ref="WEBHDFS/webhdfs/outbound/namenode/headers" apply-to="response.headers"/>
+        </url>
+        <url pattern="/webhdfs/v1/~?**">
+            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/home" apply-to="request.url"/>
+        </url>
+        <url pattern="/webhdfs/v1/~/**?**">
+            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/home/file" apply-to="request.url"/>
+            <rewrite-filter ref="WEBHDFS/webhdfs/outbound/namenode/headers" apply-to="response.headers"/>
+        </url>
+        <url pattern="/webhdfs/data/v1/**?**">
+            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/datanode" apply-to="request.url"/>
+        </url>
+    </urls>
+</service>

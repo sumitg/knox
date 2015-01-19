@@ -16,13 +16,11 @@
    limitations under the License.
 -->
 <service role="RESOURCEMANAGER" name="resourcemanager" version="2.5.0">
-    <policies></policies>
     <urls>
         <url pattern="/resourcemanager/v1/cluster/"/>
         <url pattern="/resourcemanager/v1/cluster/**?**"/>
         <url pattern="/resourcemanager/v1/cluster/apps?**">
             <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/apps/outbound" apply-to="response.body"/>
-            <policies></policies>
         </url>
         <url pattern="/resourcemanager/v1/cluster/apps?**">
             <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/apps/outbound" apply-to="response.body"/>

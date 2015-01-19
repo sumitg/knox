@@ -44,19 +44,19 @@ public class WebHdfsDeploymentContributor extends ServiceDeploymentContributorBa
 
   @Override
   public String getRole() {
-    return "WEBHDFS";
+    return "xWEBHDFS";
   }
 
   @Override
   public String getName() {
-    return "webhdfs";
+    return "xwebhdfs";
   }
 
   @Override
   public void contributeService( DeploymentContext context, Service service ) throws Exception {
-    contributeRewriteRules( context, service );
-    contributeNameNodeResource( context, service );
-    contributeDataNodeResource( context, service );
+//    contributeRewriteRules( context, service );
+//    contributeNameNodeResource( context, service );
+//    contributeDataNodeResource( context, service );
   }
 
   private void contributeRewriteRules( DeploymentContext context, Service service ) throws URISyntaxException, IOException {
