@@ -82,6 +82,7 @@ public class DeploymentFactoryFuncTest {
 
 //    ((GatewayTestConfig) config).setDeploymentDir( "clusters" );
 
+    addStacksDir(config, gatewayDir);
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
     options.put("persist-master", "false");
@@ -135,6 +136,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir( gatewayDir.getAbsolutePath() );
     File deployDir = new File( config.getGatewayDeploymentDir() );
     deployDir.mkdirs();
+    addStacksDir(config, gatewayDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
@@ -189,6 +191,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir( gatewayDir.getAbsolutePath() );
     File deployDir = new File( config.getGatewayDeploymentDir() );
     deployDir.mkdirs();
+    addStacksDir(config, gatewayDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
@@ -228,8 +231,8 @@ public class DeploymentFactoryFuncTest {
     topology.addProvider( authorizer );
 
     WebArchive war = DeploymentFactory.createDeployment( config, topology );
-    //File dir = new File( System.getProperty( "user.dir" ) );
-    //File file = war.as( ExplodedExporter.class ).exportExploded( dir, "test-cluster.war" );
+//    File dir = new File( System.getProperty( "user.dir" ) );
+//    File file = war.as( ExplodedExporter.class ).exportExploded( dir, "test-cluster.war" );
 
     Document web = parse( war.get( "WEB-INF/web.xml" ).getAsset().openStream() );
     assertThat( web, hasXPath( "/web-app/servlet/servlet-name", equalTo( "test-cluster" ) ) );
@@ -538,6 +541,33 @@ public class DeploymentFactoryFuncTest {
     return builder.parse( source );
   }
 
+  private void addStacksDir(GatewayConfig config, File targetDir) {
+    File stacksDir = new File( config.getGatewayStacksDir() );
+    stacksDir.mkdirs();
+    //TODO: [sumit] This is a hack for now, need to find a better way to locate the source resources for 'stacks' to be tested
+    String pathToStacksSource = "gateway-service-definitions/src/main/resources/services";
+    File stacksSourceDir = new File( targetDir.getParent(), pathToStacksSource);
+    if (!stacksSourceDir.exists()) {
+      stacksSourceDir = new File( targetDir.getParentFile().getParent(), pathToStacksSource);
+    }
+    if (stacksSourceDir.exists()) {
+      try {
+        FileUtils.copyDirectoryToDirectory(stacksSourceDir, stacksDir);
+      } catch ( IOException e) {
+        fail(e.getMessage());
+      }
+    }
+
+  }
+//  private void dump( Document document ) throws TransformerException {
+//    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+//    transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+//    StreamResult result = new StreamResult( new StringWriter() );
+//    DOMSource source = new DOMSource( document );
+//    transformer.transform( source, result );
+//    String xmlString = result.getWriter().toString();
+//    System.out.println( xmlString );
+//  }
   private void dump( Document document ) throws TransformerException {
     Transformer transformer = TransformerFactory.newInstance().newTransformer();
     transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
