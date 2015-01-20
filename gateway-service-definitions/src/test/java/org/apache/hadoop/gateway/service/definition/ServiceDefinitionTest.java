@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class ServiceDefinitionTest {
 
@@ -46,5 +47,14 @@ public class ServiceDefinitionTest {
     definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
     assertNotNull(definition.getDispatch());
     assertEquals("hbase", definition.getDispatch().getContributorName());
+    url = ClassLoader.getSystemResource("services/webhdfs/2.4.0/service.xml");
+    definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
+    assertNotNull(definition.getDispatch());
+    assertEquals("hdfs", definition.getDispatch().getContributorName());
+    assertEquals("ha-hdfs", definition.getDispatch().getHaContributorName());
+    List<PolicyBinding> policyBindings = definition.getPolicyBindings();
+    assertNotNull(policyBindings);
+    assertEquals("webappsec", policyBindings.get(0).getRole());
+    assertNull(policyBindings.get(0).getName());
   }
 }
