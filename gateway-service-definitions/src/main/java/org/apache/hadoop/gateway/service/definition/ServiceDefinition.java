@@ -34,6 +34,8 @@ public class ServiceDefinition {
 
   private List<UrlBinding> urlBindings;
 
+  private List<PolicyBinding> policyBindings;
+
   private CustomDispatch dispatch;
 
   @XmlAttribute
@@ -71,6 +73,16 @@ public class ServiceDefinition {
 
   public void setUrlBindings(List<UrlBinding> urlBindings) {
     this.urlBindings = urlBindings;
+  }
+
+  @XmlElement(name = "policy")
+  @XmlElementWrapper(name = "policies")
+  public List<PolicyBinding> getPolicyBindings() {
+    return policyBindings;
+  }
+
+  public void setPolicyBindings(List<PolicyBinding> policyBindings) {
+    this.policyBindings = policyBindings;
   }
 
   @XmlElement(name = "dispatch")
