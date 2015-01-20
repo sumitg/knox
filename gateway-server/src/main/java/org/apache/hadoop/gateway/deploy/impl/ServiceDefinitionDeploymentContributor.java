@@ -24,10 +24,7 @@ import org.apache.hadoop.gateway.descriptor.FilterParamDescriptor;
 import org.apache.hadoop.gateway.descriptor.ResourceDescriptor;
 import org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter;
 import org.apache.hadoop.gateway.filter.rewrite.api.UrlRewriteRulesDescriptor;
-import org.apache.hadoop.gateway.service.definition.CustomDispatch;
-import org.apache.hadoop.gateway.service.definition.RewriteFilter;
-import org.apache.hadoop.gateway.service.definition.ServiceDefinition;
-import org.apache.hadoop.gateway.service.definition.UrlBinding;
+import org.apache.hadoop.gateway.service.definition.*;
 import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
 
@@ -100,17 +97,49 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
     ResourceDescriptor resource = context.getGatewayDescriptor().addResource();
     resource.role(service.getRole());
     resource.pattern(binding.getPattern());
+    List<PolicyBinding> policyBindings = binding.getPolicyBindings();
+    if (policyBindings == null) {
+      policyBindings = serviceDefinition.getPolicyBindings();
+    }
+    if (policyBindings == null) {
+      //add default set
+      addDefaultPolicies(context, service, filterParams, params, resource);
+    } else {
+      addPolicies(context, service, filterParams, params, resource, policyBindings);
+    }
+    addDispatchFilter(context, service, resource, binding);
+  }
+
+  private void addPolicies(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource, List<PolicyBinding> policyBindings) throws URISyntaxException {
+    for (PolicyBinding policyBinding : policyBindings) {
+      String role = policyBinding.getRole();
+      if (role == null) {
+        throw new IllegalArgumentException("Policy defined has no role for service " + service.getName());
+      }
+      role = role.trim().toLowerCase();
+      if (role.equals("rewrite")) {
+        addRewriteFilter(context, service, filterParams, params, resource);
+      } else if (topologyContainsProviderType(context, role)) {
+        context.contributeFilter( service, resource, role, policyBinding.getName(), null );
+      }
+    }
+  }
+
+  private void addDefaultPolicies(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource) throws URISyntaxException {
     addWebAppSecFilters(context, service, resource);
     addAuthenticationFilter(context, service, resource);
     addIdentityAssertionFilter(context, service, resource);
     addAuthorizationFilter(context, service, resource);
+    addRewriteFilter(context, service, filterParams, params, resource);
+  }
+
+  private void addRewriteFilter(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource) throws URISyntaxException {
     if ( !filterParams.isEmpty() ) {
       for ( Map.Entry<String, String> filterParam : filterParams.entrySet() ) {
         params.add(resource.createFilterParam().name(filterParam.getKey()).value(filterParam.getValue()));
       }
     }
     addRewriteFilter(context, service, resource, params);
-    addDispatchFilter(context, service, resource, binding);
   }
 
   private void addDispatchFilter(DeploymentContext context, Service service, ResourceDescriptor resource, UrlBinding binding) {
