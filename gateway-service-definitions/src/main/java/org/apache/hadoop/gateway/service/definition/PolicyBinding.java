@@ -17,5 +17,29 @@
  */
 package org.apache.hadoop.gateway.service.definition;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 public class PolicyBinding {
+
+  private String name;
+
+  private String role;
+
+  @XmlAttribute
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @XmlAttribute
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
 }
