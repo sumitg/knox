@@ -33,6 +33,8 @@
         </url>
         <url pattern="/webhdfs/data/v1/**?**">
             <rewrite-filter ref="WEBHDFS/webhdfs/inbound/datanode" apply-to="request.url"/>
+            <dispatch contributor-name="http-client" />
         </url>
     </urls>
+    <dispatch contributor-name="hdfs" ha-contributor-name="ha-hdfs"/>
 </service>

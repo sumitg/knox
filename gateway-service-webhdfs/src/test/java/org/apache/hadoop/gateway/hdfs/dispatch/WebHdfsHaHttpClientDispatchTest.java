@@ -70,7 +70,6 @@ public class WebHdfsHaHttpClientDispatchTest {
      EasyMock.expect(context.getAttribute(HaServletContextListener.PROVIDER_ATTRIBUTE_NAME)).andReturn(haProvider).anyTimes();
      FilterConfig config = EasyMock.createNiceMock( FilterConfig.class );
      EasyMock.expect(config.getServletContext()).andReturn(context).anyTimes();
-     EasyMock.expect(config.getInitParameter( WebHdfsHaHttpClientDispatch.RESOURCE_ROLE_ATTRIBUTE )).andReturn("test-role").anyTimes();
      EasyMock.expect(config.getInitParameter(EasyMock.anyObject(String.class))).andReturn(null).anyTimes();
      InstrumentedWebHdfsHaHttpClientDispatch dispatch = new InstrumentedWebHdfsHaHttpClientDispatch();
      EasyMock.replay(context,config);
@@ -95,7 +94,6 @@ public class WebHdfsHaHttpClientDispatchTest {
       FilterConfig filterConfig = EasyMock.createNiceMock(FilterConfig.class);
       ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
-      EasyMock.expect(filterConfig.getInitParameter(WebHdfsHaHttpClientDispatch.RESOURCE_ROLE_ATTRIBUTE)).andReturn(serviceName).anyTimes();
       EasyMock.expect(filterConfig.getServletContext()).andReturn(servletContext).anyTimes();
       EasyMock.expect(servletContext.getAttribute(HaServletContextListener.PROVIDER_ATTRIBUTE_NAME)).andReturn(provider).anyTimes();
 
@@ -127,6 +125,7 @@ public class WebHdfsHaHttpClientDispatchTest {
       Assert.assertEquals(uri1.toString(), provider.getActiveURL(serviceName));
       WebHdfsHaHttpClientDispatch dispatch = new WebHdfsHaHttpClientDispatch();
       dispatch.setHttpClient(new DefaultHttpClient());
+      dispatch.setHaProvider(provider);
       dispatch.init();
       long startTime = System.currentTimeMillis();
       try {
@@ -135,9 +134,8 @@ public class WebHdfsHaHttpClientDispatchTest {
         //this is expected after the failover limit is reached
       }
       long elapsedTime = System.currentTimeMillis() - startTime;
-     //TODO: [sumit] fix HA after wiring up config for the HA dispatch
-//      Assert.assertEquals(uri2.toString(), provider.getActiveURL(serviceName));
+      Assert.assertEquals(uri2.toString(), provider.getActiveURL(serviceName));
       //test to make sure the sleep took place
-//      Assert.assertTrue(elapsedTime > 1000);
+      Assert.assertTrue(elapsedTime > 1000);
    }
 }
