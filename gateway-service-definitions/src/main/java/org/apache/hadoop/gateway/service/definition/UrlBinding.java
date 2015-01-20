@@ -29,6 +29,8 @@ public class UrlBinding {
 
   private List<RewriteFilter> rewriteFilters;
 
+  private CustomDispatch dispatch;
+
   @XmlAttribute
   public String getPattern() {
     return pattern;
@@ -45,5 +47,14 @@ public class UrlBinding {
 
   public void setRewriteFilters(List<RewriteFilter> rewriteFilters) {
     this.rewriteFilters = rewriteFilters;
+  }
+
+  @XmlElement(name = "dispatch")
+  public CustomDispatch getDispatch() {
+    return dispatch;
+  }
+
+  public void setDispatch(CustomDispatch dispatch) {
+    this.dispatch = dispatch;
   }
 }
