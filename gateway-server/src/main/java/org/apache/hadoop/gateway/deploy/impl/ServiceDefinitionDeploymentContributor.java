@@ -28,6 +28,7 @@ import org.apache.hadoop.gateway.service.definition.CustomDispatch;
 import org.apache.hadoop.gateway.service.definition.RewriteFilter;
 import org.apache.hadoop.gateway.service.definition.ServiceDefinition;
 import org.apache.hadoop.gateway.service.definition.UrlBinding;
+import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
 
 import java.net.URISyntaxException;
@@ -86,7 +87,7 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
         }
       }
       try {
-        contributeResource(context, service, binding.getPattern(), filterParams);
+        contributeResource(context, service, binding, filterParams);
       } catch ( URISyntaxException e ) {
         e.printStackTrace();
       }
@@ -94,11 +95,11 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
 
   }
 
-  private void contributeResource(DeploymentContext context, Service service, String pattern, Map<String, String> filterParams) throws URISyntaxException {
+  private void contributeResource(DeploymentContext context, Service service, UrlBinding binding, Map<String, String> filterParams) throws URISyntaxException {
     List<FilterParamDescriptor> params = new ArrayList<FilterParamDescriptor>();
     ResourceDescriptor resource = context.getGatewayDescriptor().addResource();
     resource.role(service.getRole());
-    resource.pattern(pattern);
+    resource.pattern(binding.getPattern());
     addWebAppSecFilters(context, service, resource);
     addAuthenticationFilter(context, service, resource);
     addIdentityAssertionFilter(context, service, resource);
@@ -109,20 +110,46 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
       }
     }
     addRewriteFilter(context, service, resource, params);
-    CustomDispatch customDispatch = serviceDefinition.getDispatch();
-    if (customDispatch != null) {
-      String contributorName = customDispatch.getContributorName();
-      if (contributorName != null) {
-        addDispatchFilter(context, service, resource, DISPATCH_ROLE, contributorName);
+    addDispatchFilter(context, service, resource, binding);
+  }
+
+  private void addDispatchFilter(DeploymentContext context, Service service, ResourceDescriptor resource, UrlBinding binding) {
+    CustomDispatch customDispatch = binding.getDispatch();
+    if ( customDispatch == null ) {
+      customDispatch = serviceDefinition.getDispatch();
+    }
+    if ( customDispatch != null ) {
+      boolean isHaEnabled = isHaEnabled(context);
+      if ( isHaEnabled && (customDispatch.getHaContributorName() != null) ) {
+        addDispatchFilter(context, service, resource, DISPATCH_ROLE, customDispatch.getHaContributorName());
       } else {
-        String className = customDispatch.getClassName();
-        if (className != null) {
-          FilterDescriptor filter = resource.addFilter().name( getName() ).role( DISPATCH_ROLE ).impl( GatewayDispatchFilter.class );
-          filter.param().name(DISPATCH_IMPL_PARAM).value(className);
+        String contributorName = customDispatch.getContributorName();
+        if ( contributorName != null ) {
+          addDispatchFilter(context, service, resource, DISPATCH_ROLE, contributorName);
+        } else {
+          String className = customDispatch.getClassName();
+          if ( className != null ) {
+            FilterDescriptor filter = resource.addFilter().name(getName()).role(DISPATCH_ROLE).impl(GatewayDispatchFilter.class);
+            filter.param().name(DISPATCH_IMPL_PARAM).value(className);
+          }
         }
       }
     } else {
       addDispatchFilter(context, service, resource, DISPATCH_ROLE, "http-client");
     }
   }
+
+  private boolean isHaEnabled(DeploymentContext context) {
+    Provider provider = getProviderByRole(context, "ha");
+    if ( provider != null && provider.isEnabled() ) {
+      Map<String, String> params = provider.getParams();
+      if ( params != null ) {
+        if ( params.containsKey(getRole()) ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
 }
