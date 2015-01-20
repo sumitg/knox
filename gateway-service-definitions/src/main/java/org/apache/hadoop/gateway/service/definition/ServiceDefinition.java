@@ -38,6 +38,8 @@ public class ServiceDefinition {
 
   private CustomDispatch dispatch;
 
+  private List<PolicyBinding> policyBindings;
+
   private CustomDispatch dispatch;
 
   @XmlAttribute
@@ -94,6 +96,16 @@ public class ServiceDefinition {
 
   public void setDispatch(CustomDispatch dispatch) {
     this.dispatch = dispatch;
+  }
+
+  @XmlElement(name = "policy")
+  @XmlElementWrapper(name = "policies")
+  public List<PolicyBinding> getPolicyBindings() {
+    return policyBindings;
+  }
+
+  public void setPolicyBindings(List<PolicyBinding> policyBindings) {
+    this.policyBindings = policyBindings;
   }
 
   @XmlElement(name = "dispatch")

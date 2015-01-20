@@ -19,6 +19,7 @@ package org.apache.hadoop.gateway.service.definition;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class UrlBinding {
   private String pattern;
 
   private List<RewriteFilter> rewriteFilters;
+
+  private List<PolicyBinding> policyBindings;
 
   private CustomDispatch dispatch;
 
@@ -47,6 +50,16 @@ public class UrlBinding {
 
   public void setRewriteFilters(List<RewriteFilter> rewriteFilters) {
     this.rewriteFilters = rewriteFilters;
+  }
+
+  @XmlElement(name = "policy")
+  @XmlElementWrapper(name = "policies")
+  public List<PolicyBinding> getPolicyBindings() {
+    return policyBindings;
+  }
+
+  public void setPolicyBindings(List<PolicyBinding> policyBindings) {
+    this.policyBindings = policyBindings;
   }
 
   @XmlElement(name = "dispatch")
