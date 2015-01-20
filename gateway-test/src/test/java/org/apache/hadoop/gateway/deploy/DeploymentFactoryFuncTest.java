@@ -83,7 +83,7 @@ public class DeploymentFactoryFuncTest {
 
 //    ((GatewayTestConfig) config).setDeploymentDir( "clusters" );
 
-    addStacksDir(config, gatewayDir);
+    addStacksDir(config, targetDir);
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
     options.put("persist-master", "false");
@@ -137,7 +137,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir( gatewayDir.getAbsolutePath() );
     File deployDir = new File( config.getGatewayDeploymentDir() );
     deployDir.mkdirs();
-    addStacksDir(config, gatewayDir);
+    addStacksDir(config, targetDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
@@ -192,7 +192,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir( gatewayDir.getAbsolutePath() );
     File deployDir = new File( config.getGatewayDeploymentDir() );
     deployDir.mkdirs();
-    addStacksDir(config, gatewayDir);
+    addStacksDir(config, targetDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String,String> options = new HashMap<String,String>();
