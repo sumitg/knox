@@ -16,6 +16,13 @@
    limitations under the License.
 -->
 <service role="WEBHDFS" name="webhdfs" version="2.4.0">
+    <policies>
+        <policy role="webappsec"/>
+        <policy role="authentication"/>
+        <policy role="rewrite"/>
+        <policy role="identity-assertion"/>
+        <policy role="authorization"/>
+    </policies>
     <urls>
         <url pattern="/webhdfs/v1/?**">
             <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/root" apply-to="request.url"/>
