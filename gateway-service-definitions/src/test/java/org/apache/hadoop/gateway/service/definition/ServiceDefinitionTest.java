@@ -39,10 +39,10 @@ public class ServiceDefinitionTest {
     assertEquals("resourcemanager", definition.getName());
     assertEquals("RESOURCEMANAGER", definition.getRole());
     assertEquals("2.5.0", definition.getVersion());
-    List<UrlBinding> bindings = definition.getUrlBindings();
+    List<Route> bindings = definition.getRoutes();
     assertNotNull(bindings);
     assertEquals(12, bindings.size());
-    assertNotNull(bindings.get(0).getPattern());
+    assertNotNull(bindings.get(0).getPath());
     url = ClassLoader.getSystemResource("services/hbase/0.98.0/service.xml");
     definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
     assertNotNull(definition.getDispatch());
@@ -52,7 +52,7 @@ public class ServiceDefinitionTest {
     assertNotNull(definition.getDispatch());
     assertEquals("hdfs", definition.getDispatch().getContributorName());
     assertEquals("ha-hdfs", definition.getDispatch().getHaContributorName());
-    List<PolicyBinding> policyBindings = definition.getPolicyBindings();
+    List<Policy> policyBindings = definition.getPolicies();
     assertNotNull(policyBindings);
     assertEquals("webappsec", policyBindings.get(0).getRole());
     assertNull(policyBindings.get(0).getName());
