@@ -32,9 +32,9 @@ public class ServiceDefinition {
 
   private String version;
 
-  private List<UrlBinding> urlBindings;
+  private List<Route> routes;
 
-  private List<PolicyBinding> policyBindings;
+  private List<Policy> policies;
 
   private CustomDispatch dispatch;
 
@@ -65,24 +65,24 @@ public class ServiceDefinition {
     this.version = version;
   }
 
-  @XmlElement(name = "url")
-  @XmlElementWrapper(name = "urls")
-  public List<UrlBinding> getUrlBindings() {
-    return urlBindings;
+  @XmlElement(name = "route")
+  @XmlElementWrapper(name = "routes")
+  public List<Route> getRoutes() {
+    return routes;
   }
 
-  public void setUrlBindings(List<UrlBinding> urlBindings) {
-    this.urlBindings = urlBindings;
+  public void setRoutes(List<Route> routes) {
+    this.routes = routes;
   }
 
   @XmlElement(name = "policy")
   @XmlElementWrapper(name = "policies")
-  public List<PolicyBinding> getPolicyBindings() {
-    return policyBindings;
+  public List<Policy> getPolicies() {
+    return policies;
   }
 
-  public void setPolicyBindings(List<PolicyBinding> policyBindings) {
-    this.policyBindings = policyBindings;
+  public void setPolicies(List<Policy> policies) {
+    this.policies = policies;
   }
 
   @XmlElement(name = "dispatch")
