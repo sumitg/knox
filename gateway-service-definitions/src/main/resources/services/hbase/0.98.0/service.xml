@@ -15,19 +15,19 @@
    limitations under the License.
 -->
 <service role="WEBHBASE" name="webhbase" version="0.98.0">
-    <urls>
-        <url pattern="/hbase/?**">
-            <rewrite-filter ref="WEBHBASE/webhbase/headers/outbound" apply-to="response.headers"/>
-        </url>
-        <url pattern="/hbase/**?**">
-            <rewrite-filter ref="WEBHBASE/webhbase/headers/outbound" apply-to="response.headers"/>
-        </url>
-        <url pattern="/hbase/status/cluster?**">
-            <rewrite-filter ref="WEBHBASE/webhbase/status/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/hbase/*/regions?**">
-            <rewrite-filter ref="WEBHBASE/webhbase/regions/outbound" apply-to="response.body"/>
-        </url>
-    </urls>
+    <routes>
+        <route path="/hbase/?**">
+            <rewrite apply="WEBHBASE/webhbase/headers/outbound" to="response.headers"/>
+        </route>
+        <route path="/hbase/**?**">
+            <rewrite apply="WEBHBASE/webhbase/headers/outbound" to="response.headers"/>
+        </route>
+        <route path="/hbase/status/cluster?**">
+            <rewrite apply="WEBHBASE/webhbase/status/outbound" to="response.body"/>
+        </route>
+        <route path="/hbase/*/regions?**">
+            <rewrite apply="WEBHBASE/webhbase/regions/outbound" to="response.body"/>
+        </route>
+    </routes>
     <dispatch contributor-name="hbase"/>
 </service>

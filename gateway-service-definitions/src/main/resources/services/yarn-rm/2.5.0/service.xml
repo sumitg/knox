@@ -16,39 +16,39 @@
    limitations under the License.
 -->
 <service role="RESOURCEMANAGER" name="resourcemanager" version="2.5.0">
-    <urls>
-        <url pattern="/resourcemanager/v1/cluster/"/>
-        <url pattern="/resourcemanager/v1/cluster/**?**"/>
-        <url pattern="/resourcemanager/v1/cluster/apps?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/apps/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/v1/cluster/apps?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/apps/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/v1/cluster/apps/*?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/app/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/v1/cluster/apps/*/appattempts?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/appattempts/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/v1/cluster/nodes?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/nodes/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/v1/cluster/nodes/*?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/nodeId/inbound" apply-to="request.url"/>
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/node/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/proxy/*/ws/v1/**?**">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/inbound/proxy" apply-to="request.url"/>
-        </url>
-        <url pattern="/resourcemanager/proxy/*/ws/v1/mapreduce/jobs/*/jobattempts">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/proxy/jobattempts/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/proxy/*/ws/v1/mapreduce/jobs/*/tasks/*/attempts">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/proxy/taskattempts/outbound" apply-to="response.body"/>
-        </url>
-        <url pattern="/resourcemanager/proxy/*/ws/v1/mapreduce/jobs/*/tasks/*/attempts/*">
-            <rewrite-filter ref="RESOURCEMANAGER/resourcemanager/proxy/taskattempt/outbound" apply-to="response.body"/>
-        </url>
-    </urls>
+    <routes>
+        <route path="/resourcemanager/v1/cluster/"/>
+        <route path="/resourcemanager/v1/cluster/**?**"/>
+        <route path="/resourcemanager/v1/cluster/apps?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/apps/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/v1/cluster/apps?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/apps/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/v1/cluster/apps/*?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/app/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/v1/cluster/apps/*/appattempts?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/appattempts/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/v1/cluster/nodes?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/nodes/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/v1/cluster/nodes/*?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/nodeId/inbound" to="request.url"/>
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/node/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/proxy/*/ws/v1/**?**">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/inbound/proxy" to="request.url"/>
+        </route>
+        <route path="/resourcemanager/proxy/*/ws/v1/mapreduce/jobs/*/jobattempts">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/proxy/jobattempts/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/proxy/*/ws/v1/mapreduce/jobs/*/tasks/*/attempts">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/proxy/taskattempts/outbound" to="response.body"/>
+        </route>
+        <route path="/resourcemanager/proxy/*/ws/v1/mapreduce/jobs/*/tasks/*/attempts/*">
+            <rewrite apply="RESOURCEMANAGER/resourcemanager/proxy/taskattempt/outbound" to="response.body"/>
+        </route>
+    </routes>
 </service>
