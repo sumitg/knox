@@ -16,8 +16,8 @@
    limitations under the License.
 -->
 <service role="WEBHCAT" name="webhcat" version="0.13.0">
-    <urls>
-        <url pattern="/templeton/v1/?**"/>
-        <url pattern="/templeton/v1/**?**"/>
-    </urls>
+    <routes>
+        <route path="/templeton/v1/?**"/>
+        <route path="/templeton/v1/**?**"/>
+    </routes>
 </service>
