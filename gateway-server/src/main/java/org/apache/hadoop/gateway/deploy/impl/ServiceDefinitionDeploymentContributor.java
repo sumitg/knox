@@ -74,13 +74,13 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
 
   private void contributeResources(DeploymentContext context, Service service) {
     Map<String, String> filterParams = new HashMap<String, String>();
-    List<UrlBinding> bindings = serviceDefinition.getUrlBindings();
-    for ( UrlBinding binding : bindings ) {
-      List<RewriteFilter> filters = binding.getRewriteFilters();
+    List<Route> bindings = serviceDefinition.getRoutes();
+    for ( Route binding : bindings ) {
+      List<Rewrite> filters = binding.getRewrites();
       if ( filters != null && !filters.isEmpty() ) {
         filterParams.clear();
-        for ( RewriteFilter filter : filters ) {
-          filterParams.put(filter.getApplyTo(), filter.getRef());
+        for ( Rewrite filter : filters ) {
+          filterParams.put(filter.getTo(), filter.getApply());
         }
       }
       try {
@@ -92,14 +92,14 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
 
   }
 
-  private void contributeResource(DeploymentContext context, Service service, UrlBinding binding, Map<String, String> filterParams) throws URISyntaxException {
+  private void contributeResource(DeploymentContext context, Service service, Route binding, Map<String, String> filterParams) throws URISyntaxException {
     List<FilterParamDescriptor> params = new ArrayList<FilterParamDescriptor>();
     ResourceDescriptor resource = context.getGatewayDescriptor().addResource();
     resource.role(service.getRole());
-    resource.pattern(binding.getPattern());
-    List<PolicyBinding> policyBindings = binding.getPolicyBindings();
+    resource.pattern(binding.getPath());
+    List<Policy> policyBindings = binding.getPolicies();
     if (policyBindings == null) {
-      policyBindings = serviceDefinition.getPolicyBindings();
+      policyBindings = serviceDefinition.getPolicies();
     }
     if (policyBindings == null) {
       //add default set
@@ -110,8 +110,8 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
     addDispatchFilter(context, service, resource, binding);
   }
 
-  private void addPolicies(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource, List<PolicyBinding> policyBindings) throws URISyntaxException {
-    for (PolicyBinding policyBinding : policyBindings) {
+  private void addPolicies(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource, List<Policy> policyBindings) throws URISyntaxException {
+    for (Policy policyBinding : policyBindings) {
       String role = policyBinding.getRole();
       if (role == null) {
         throw new IllegalArgumentException("Policy defined has no role for service " + service.getName());
@@ -142,7 +142,7 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
     addRewriteFilter(context, service, resource, params);
   }
 
-  private void addDispatchFilter(DeploymentContext context, Service service, ResourceDescriptor resource, UrlBinding binding) {
+  private void addDispatchFilter(DeploymentContext context, Service service, ResourceDescriptor resource, Route binding) {
     CustomDispatch customDispatch = binding.getDispatch();
     if ( customDispatch == null ) {
       customDispatch = serviceDefinition.getDispatch();

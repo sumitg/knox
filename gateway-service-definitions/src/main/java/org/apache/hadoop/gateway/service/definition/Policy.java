@@ -18,30 +18,28 @@
 package org.apache.hadoop.gateway.service.definition;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 
-@XmlType(name = "rewrite-filter")
-public class RewriteFilter {
+public class Policy {
 
-  private String ref;
+  private String name;
 
-  private String applyTo;
+  private String role;
 
   @XmlAttribute
-  public String getRef() {
-    return ref;
+  public String getName() {
+    return name;
   }
 
-  public void setRef(String ref) {
-    this.ref = ref;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  @XmlAttribute(name = "apply-to")
-  public String getApplyTo() {
-    return applyTo;
+  @XmlAttribute
+  public String getRole() {
+    return role;
   }
 
-  public void setApplyTo(String applyTo) {
-    this.applyTo = applyTo;
+  public void setRole(String role) {
+    this.role = role;
   }
 }

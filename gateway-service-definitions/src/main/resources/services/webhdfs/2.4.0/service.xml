@@ -23,25 +23,25 @@
         <policy role="identity-assertion"/>
         <policy role="authorization"/>
     </policies>
-    <urls>
-        <url pattern="/webhdfs/v1/?**">
-            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/root" apply-to="request.url"/>
-        </url>
-        <url pattern="/webhdfs/v1/**?**">
-            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/file" apply-to="request.url"/>
-            <rewrite-filter ref="WEBHDFS/webhdfs/outbound/namenode/headers" apply-to="response.headers"/>
-        </url>
-        <url pattern="/webhdfs/v1/~?**">
-            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/home" apply-to="request.url"/>
-        </url>
-        <url pattern="/webhdfs/v1/~/**?**">
-            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/namenode/home/file" apply-to="request.url"/>
-            <rewrite-filter ref="WEBHDFS/webhdfs/outbound/namenode/headers" apply-to="response.headers"/>
-        </url>
-        <url pattern="/webhdfs/data/v1/**?**">
-            <rewrite-filter ref="WEBHDFS/webhdfs/inbound/datanode" apply-to="request.url"/>
+    <routes>
+        <route path="/webhdfs/v1/?**">
+            <rewrite apply="WEBHDFS/webhdfs/inbound/namenode/root" to="request.url"/>
+        </route>
+        <route path="/webhdfs/v1/**?**">
+            <rewrite apply="WEBHDFS/webhdfs/inbound/namenode/file" to="request.url"/>
+            <rewrite apply="WEBHDFS/webhdfs/outbound/namenode/headers" to="response.headers"/>
+        </route>
+        <route path="/webhdfs/v1/~?**">
+            <rewrite apply="WEBHDFS/webhdfs/inbound/namenode/home" to="request.url"/>
+        </route>
+        <route path="/webhdfs/v1/~/**?**">
+            <rewrite apply="WEBHDFS/webhdfs/inbound/namenode/home/file" to="request.url"/>
+            <rewrite apply="WEBHDFS/webhdfs/outbound/namenode/headers" to="response.headers"/>
+        </route>
+        <route path="/webhdfs/data/v1/**?**">
+            <rewrite apply="WEBHDFS/webhdfs/inbound/datanode" to="request.url"/>
             <dispatch contributor-name="http-client" />
-        </url>
-    </urls>
+        </route>
+    </routes>
     <dispatch contributor-name="hdfs" ha-contributor-name="ha-hdfs"/>
 </service>

@@ -16,15 +16,15 @@
    limitations under the License.
 -->
 <service role="OOZIE" name="oozie" version="4.0.0">
-    <urls>
-        <url pattern="/oozie/**?**">
-            <rewrite-filter ref="OOZIE/oozie/configuration" apply-to="request.body"/>
-        </url>
-        <url pattern="/oozie/v1/**?**">
-            <rewrite-filter ref="OOZIE/oozie/configuration" apply-to="request.body"/>
-        </url>
-        <url pattern="/oozie/v2/**?**">
-            <rewrite-filter ref="OOZIE/oozie/configuration" apply-to="request.body"/>
-        </url>
-    </urls>
+    <routes>
+        <route path="/oozie/**?**">
+            <rewrite apply="OOZIE/oozie/configuration" to="request.body"/>
+        </route>
+        <route path="/oozie/v1/**?**">
+            <rewrite apply="OOZIE/oozie/configuration" to="request.body"/>
+        </route>
+        <route path="/oozie/v2/**?**">
+            <rewrite apply="OOZIE/oozie/configuration" to="request.body"/>
+        </route>
+    </routes>
 </service>
