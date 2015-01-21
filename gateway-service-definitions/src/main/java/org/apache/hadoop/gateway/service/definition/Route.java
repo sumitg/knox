@@ -23,43 +23,43 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
-@XmlType(name = "url")
-public class UrlBinding {
+@XmlType(name = "route")
+public class Route {
 
-  private String pattern;
+  private String path;
 
-  private List<RewriteFilter> rewriteFilters;
+  private List<Rewrite> rewrites;
 
-  private List<PolicyBinding> policyBindings;
+  private List<Policy> policies;
 
   private CustomDispatch dispatch;
 
   @XmlAttribute
-  public String getPattern() {
-    return pattern;
+  public String getPath() {
+    return path;
   }
 
-  public void setPattern(String pattern) {
-    this.pattern = pattern;
+  public void setPath(String path) {
+    this.path = path;
   }
 
-  @XmlElement(name = "rewrite-filter")
-  public List<RewriteFilter> getRewriteFilters() {
-    return rewriteFilters;
+  @XmlElement(name = "rewrite")
+  public List<Rewrite> getRewrites() {
+    return rewrites;
   }
 
-  public void setRewriteFilters(List<RewriteFilter> rewriteFilters) {
-    this.rewriteFilters = rewriteFilters;
+  public void setRewrites(List<Rewrite> rewrites) {
+    this.rewrites = rewrites;
   }
 
   @XmlElement(name = "policy")
   @XmlElementWrapper(name = "policies")
-  public List<PolicyBinding> getPolicyBindings() {
-    return policyBindings;
+  public List<Policy> getPolicies() {
+    return policies;
   }
 
-  public void setPolicyBindings(List<PolicyBinding> policyBindings) {
-    this.policyBindings = policyBindings;
+  public void setPolicies(List<Policy> policies) {
+    this.policies = policies;
   }
 
   @XmlElement(name = "dispatch")
