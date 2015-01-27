@@ -37,6 +37,7 @@
         </license>
     </licenses>
 
+
     <profiles>
         <profile>
             <id>release</id>
@@ -93,6 +94,36 @@
                                 <version>1.8.1</version>
                             </dependency>
                         </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.8</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${gateway-group}</groupId>
+                                            <artifactId>gateway-service-definitions</artifactId>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                            <includes>services/**/*</includes>
+                                            <!--<excludes>**/*.class</excludes>-->
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <!--<outputDirectory>${project.build.directory}/data</outputDirectory>-->
+                                    <!--<overWriteReleases>false</overWriteReleases>-->
+                                    <!--<overWriteSnapshots>true</overWriteSnapshots>-->
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
