@@ -127,6 +127,9 @@ public interface GatewayMessages {
   @Message( level = MessageLevel.WARN, text = "Ignoring service deployment contributor with invalid null role: {0}" )
   void ignoringServiceContributorWithMissingRole( String className );
 
+  @Message( level = MessageLevel.WARN, text = "Ignoring service deployment contributor with invalid null version: {0}" )
+  void ignoringServiceContributorWithMissingVersion( String className );
+
   @Message( level = MessageLevel.WARN, text = "Ignoring provider deployment contributor with invalid null name: {0}" )
   void ignoringProviderContributorWithMissingName( String className );
 
