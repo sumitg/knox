@@ -27,6 +27,7 @@ import org.apache.hadoop.gateway.filter.rewrite.api.UrlRewriteRulesDescriptor;
 import org.apache.hadoop.gateway.service.definition.*;
 import org.apache.hadoop.gateway.topology.Provider;
 import org.apache.hadoop.gateway.topology.Service;
+import org.apache.hadoop.gateway.topology.Version;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -57,6 +58,11 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
   @Override
   public String getName() {
     return serviceDefinition.getName();
+  }
+
+  @Override
+  public Version getVersion() {
+    return new Version(serviceDefinition.getVersion());
   }
 
   @Override
