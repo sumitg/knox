@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.hadoop.gateway.config.ConfigurationInjectorBuilder.configuration;
+
 public class GatewayDispatchFilter extends AbstractGatewayFilter {
 
   private static Map<String, Adapter> METHOD_ADAPTERS = createMethodAdapters();
@@ -54,14 +56,11 @@ public class GatewayDispatchFilter extends AbstractGatewayFilter {
     super.init(filterConfig);
     String dispatchImpl = filterConfig.getInitParameter("dispatch-impl");
     dispatch = newDispatch(dispatchImpl);
+    configuration().target(dispatch).source(filterConfig).inject();
     CloseableHttpClient client = HttpClients.createSystem();
     //[sumit] this can perhaps be stashed in the servlet context to increase sharing of the client
     dispatch.setHttpClient(client);
     dispatch.init();
-    //TODO [sumit] set buffer size in config object passed to init or use setters before init?
-//      if (replayBufferSizeString != null) {
-//         dispatch.setReplayBufferSize(Integer.valueOf(replayBufferSizeString));
-//      }
   }
 
   public Dispatch getDispatch() {
@@ -139,15 +138,15 @@ public class GatewayDispatchFilter extends AbstractGatewayFilter {
   }
 
   private Dispatch newDispatch(String dispatchImpl) throws ServletException {
-      try {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if( loader == null ) {
-          loader = this.getClass().getClassLoader();
-        }
-        Class<Dispatch> clazz = (Class)loader.loadClass(dispatchImpl);
-        return clazz.newInstance();
-      } catch( Exception e ) {
-        throw new ServletException( e );
+    try {
+      ClassLoader loader = Thread.currentThread().getContextClassLoader();
+      if ( loader == null ) {
+        loader = this.getClass().getClassLoader();
       }
+      Class<Dispatch> clazz = (Class) loader.loadClass(dispatchImpl);
+      return clazz.newInstance();
+    } catch ( Exception e ) {
+      throw new ServletException(e);
+    }
   }
 }
