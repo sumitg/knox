@@ -62,26 +62,26 @@ import org.apache.http.message.BasicHeader;
  */
 public class HttpClientDispatch extends AbstractGatewayDispatch {
 
+  // private static final String CT_APP_WWW_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
+  // private static final String CT_APP_XML = "application/xml";
+  protected static final String Q_DELEGATION_EQ = "?delegation=";
+  protected static final String AMP_DELEGATION_EQ = "&delegation=";
+  protected static final String COOKIE = "Cookie";
+  protected static final String SET_COOKIE = "Set-Cookie";
+  protected static final String WWW_AUTHENTICATE = "WWW-Authenticate";
+  protected static final String NEGOTIATE = "Negotiate";
 
-   // private static final String CT_APP_WWW_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
-   // private static final String CT_APP_XML = "application/xml";
-   protected static final String Q_DELEGATION_EQ = "?delegation=";
-   protected static final String AMP_DELEGATION_EQ = "&delegation=";
-   protected static final String COOKIE = "Cookie";
-   protected static final String SET_COOKIE = "Set-Cookie";
-   protected static final String WWW_AUTHENTICATE = "WWW-Authenticate";
-   protected static final String NEGOTIATE = "Negotiate";
+  protected static SpiGatewayMessages LOG = MessagesFactory.get(SpiGatewayMessages.class);
+  protected static SpiGatewayResources RES = ResourcesFactory.get(SpiGatewayResources.class);
+  protected static Auditor auditor = AuditServiceFactory.getAuditService().getAuditor(AuditConstants.DEFAULT_AUDITOR_NAME,
+      AuditConstants.KNOX_SERVICE_NAME, AuditConstants.KNOX_COMPONENT_NAME);
+  private static final int DEFAULT_REPLAY_BUFFER_SIZE = 4 * 1024; // 4K
 
-   protected static SpiGatewayMessages LOG = MessagesFactory.get(SpiGatewayMessages.class);
-   protected static SpiGatewayResources RES = ResourcesFactory.get(SpiGatewayResources.class);
-   protected static Auditor auditor = AuditServiceFactory.getAuditService().getAuditor(AuditConstants.DEFAULT_AUDITOR_NAME,
-         AuditConstants.KNOX_SERVICE_NAME, AuditConstants.KNOX_COMPONENT_NAME);
+  protected AppCookieManager appCookieManager;
 
-   protected AppCookieManager appCookieManager;
+  protected static final String REPLAY_BUFFER_SIZE_PARAM = "replayBufferSize";
 
-   protected static final String REPLAY_BUFFER_SIZE_PARAM = "replayBufferSize";
-
-   private int replayBufferSize = 0;
+  private int replayBufferSize = 0;
 
   @Override
   public void init() {
