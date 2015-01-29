@@ -61,7 +61,7 @@ public class DispatchDeploymentContributor extends ProviderDeploymentContributor
     }
     FilterDescriptor filter = resource.addFilter().name( getName() ).role( getRole() ).impl( GatewayDispatchFilter.class );
     filter.param().name(DISPATCH_IMPL_PARAM).value(HttpClientDispatch.class.getName());
-    filter.param().name("replayBufferSize").value(replayBufferSize);
+    filter.param().name(REPLAY_BUFFER_SIZE_PARAM).value(replayBufferSize);
     if( context.getGatewayConfig().isHadoopKerberosSecured() ) {
       filter.param().name("kerberos").value("true");
     }
