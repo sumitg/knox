@@ -35,6 +35,8 @@ import org.apache.hadoop.gateway.audit.api.AuditServiceFactory;
 import org.apache.hadoop.gateway.audit.api.Auditor;
 import org.apache.hadoop.gateway.audit.api.ResourceType;
 import org.apache.hadoop.gateway.audit.log4j.audit.AuditConstants;
+import org.apache.hadoop.gateway.config.Configure;
+import org.apache.hadoop.gateway.config.Default;
 import org.apache.hadoop.gateway.config.GatewayConfig;
 import org.apache.hadoop.gateway.i18n.messages.MessagesFactory;
 import org.apache.hadoop.gateway.i18n.resources.ResourcesFactory;
@@ -94,15 +96,6 @@ public class HttpClientDispatch extends AbstractGatewayDispatch {
   public void setAppCookieManager(AppCookieManager appCookieManager) {
     this.appCookieManager = appCookieManager;
   }
-
-//   protected void init(FilterConfig filterConfig, AppCookieManager cookieManager) throws ServletException {
-//      super.init(filterConfig);
-//      appCookieManager = cookieManager;
-//      String replayBufferSizeString = filterConfig.getInitParameter(REPLAY_BUFFER_SIZE_PARAM);
-//      if (replayBufferSizeString != null) {
-//         setReplayBufferSize(Integer.valueOf(replayBufferSizeString));
-//      }
-//   }
 
   protected void executeRequest(
          HttpUriRequest outboundRequest,
@@ -310,7 +303,8 @@ public class HttpClientDispatch extends AbstractGatewayDispatch {
       return replayBufferSize;
    }
 
-   protected void setReplayBufferSize(int size) {
+   @Configure
+   protected void setReplayBufferSize(@Default("4") int size) {
       replayBufferSize = size;
    }
 

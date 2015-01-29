@@ -36,6 +36,7 @@
     <modules>
         <module>gateway-test-utils</module>
         <module>gateway-util-common</module>
+        <module>gateway-util-configinjector</module>
         <module>gateway-util-launcher</module>
         <module>gateway-util-urltemplate</module>
         <module>gateway-test-ldap</module>
@@ -348,6 +349,11 @@
             <dependency>
                 <groupId>${gateway-group}</groupId>
                 <artifactId>gateway-util-common</artifactId>
+                <version>${gateway-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${gateway-group}</groupId>
+                <artifactId>gateway-util-configinjector</artifactId>
                 <version>${gateway-version}</version>
             </dependency>
             <dependency>
