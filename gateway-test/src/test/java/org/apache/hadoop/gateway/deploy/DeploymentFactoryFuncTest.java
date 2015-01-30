@@ -382,6 +382,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir(gatewayDir.getAbsolutePath());
     File deployDir = new File(config.getGatewayDeploymentDir());
     deployDir.mkdirs();
+    addStacksDir(config, targetDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String, String> options = new HashMap<String, String>();
@@ -456,6 +457,7 @@ public class DeploymentFactoryFuncTest {
     ((GatewayTestConfig) config).setGatewayHomeDir(gatewayDir.getAbsolutePath());
     File deployDir = new File(config.getGatewayDeploymentDir());
     deployDir.mkdirs();
+    addStacksDir(config, targetDir);
 
     DefaultGatewayServices srvcs = new DefaultGatewayServices();
     Map<String, String> options = new HashMap<String, String>();
