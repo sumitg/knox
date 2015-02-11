@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.gateway.hdfs.dispatch;
 
+import org.apache.hadoop.gateway.config.Configure;
 import org.apache.hadoop.gateway.filter.AbstractGatewayFilter;
 import org.apache.hadoop.gateway.ha.provider.HaProvider;
 import org.apache.hadoop.gateway.ha.provider.HaServiceConfig;
@@ -81,6 +82,7 @@ public class WebHdfsHaHttpClientDispatch extends HdfsDispatch {
     return haProvider;
   }
 
+  @Configure
   public void setHaProvider(HaProvider haProvider) {
     this.haProvider = haProvider;
   }

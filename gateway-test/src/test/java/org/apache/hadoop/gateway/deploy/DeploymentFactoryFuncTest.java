@@ -267,7 +267,7 @@ public class DeploymentFactoryFuncTest {
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[6]/class", equalTo( "org.apache.hadoop.gateway.filter.AclsAuthorizationFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/role", equalTo( "dispatch" ) ) );
-    assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/name", equalTo( "hdfs" ) ) );
+    assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/name", equalTo( "webhdfs" ) ) );
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[2]/pattern", equalTo( "/webhdfs/v1/**?**" ) ) );
@@ -293,7 +293,7 @@ public class DeploymentFactoryFuncTest {
     assertThat( gateway, hasXPath( "/gateway/resource[1]/filter[6]/class", equalTo( "org.apache.hadoop.gateway.filter.AclsAuthorizationFilter" ) ) );
 
     assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/role", equalTo( "dispatch" ) ) );
-    assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/name", equalTo( "hdfs" ) ) );
+    assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/name", equalTo( "webhdfs" ) ) );
     assertThat( gateway, hasXPath( "/gateway/resource[2]/filter[7]/class", equalTo( "org.apache.hadoop.gateway.dispatch.GatewayDispatchFilter" ) ) );
   }
 
@@ -504,7 +504,7 @@ public class DeploymentFactoryFuncTest {
 
     WebArchive war = DeploymentFactory.createDeployment( config, topology );
     Document doc = parse( war.get( "WEB-INF/gateway.xml" ).getAsset().openStream() );
-    //dump( doc );
+    dump( doc );
 
     Node resourceNode, filterNode, paramNode;
     String value;

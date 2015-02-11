@@ -29,7 +29,11 @@ public class FilterConfigurationAdapter implements ConfigurationAdapter {
   }
 
   @Override
-  public String getConfigurationValue(String name) throws ConfigurationException {
-    return config.getInitParameter(name);
+  public Object getConfigurationValue(String name) throws ConfigurationException {
+    Object value = config.getInitParameter(name);
+    if (value == null) {
+      value = config.getServletContext().getAttribute(name);
+    }
+    return value;
   }
 }

@@ -41,6 +41,10 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
 
   private static final String DISPATCH_IMPL_PARAM = "dispatch-impl";
 
+  private static final String REPLAY_BUFFER_SIZE_PARAM = "replayBufferSize";
+
+  public static final String DEFAULT_REPLAY_BUFFER_SIZE = "8";
+
   private ServiceDefinition serviceDefinition;
 
   private UrlRewriteRulesDescriptor serviceRules;
@@ -104,10 +108,10 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
     resource.role(service.getRole());
     resource.pattern(binding.getPath());
     List<Policy> policyBindings = binding.getPolicies();
-    if (policyBindings == null) {
+    if ( policyBindings == null ) {
       policyBindings = serviceDefinition.getPolicies();
     }
-    if (policyBindings == null) {
+    if ( policyBindings == null ) {
       //add default set
       addDefaultPolicies(context, service, filterParams, params, resource);
     } else {
@@ -117,16 +121,16 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
   }
 
   private void addPolicies(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource, List<Policy> policyBindings) throws URISyntaxException {
-    for (Policy policyBinding : policyBindings) {
+    for ( Policy policyBinding : policyBindings ) {
       String role = policyBinding.getRole();
-      if (role == null) {
+      if ( role == null ) {
         throw new IllegalArgumentException("Policy defined has no role for service " + service.getName());
       }
       role = role.trim().toLowerCase();
-      if (role.equals("rewrite")) {
+      if ( role.equals("rewrite") ) {
         addRewriteFilter(context, service, filterParams, params, resource);
-      } else if (topologyContainsProviderType(context, role)) {
-        context.contributeFilter( service, resource, role, policyBinding.getName(), null );
+      } else if ( topologyContainsProviderType(context, role) ) {
+        context.contributeFilter(service, resource, role, policyBinding.getName(), null);
       }
     }
   }
@@ -134,9 +138,9 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
   private void addDefaultPolicies(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource) throws URISyntaxException {
     addWebAppSecFilters(context, service, resource);
     addAuthenticationFilter(context, service, resource);
+    addRewriteFilter(context, service, filterParams, params, resource);
     addIdentityAssertionFilter(context, service, resource);
     addAuthorizationFilter(context, service, resource);
-    addRewriteFilter(context, service, filterParams, params, resource);
   }
 
   private void addRewriteFilter(DeploymentContext context, Service service, Map<String, String> filterParams, List<FilterParamDescriptor> params, ResourceDescriptor resource) throws URISyntaxException {
@@ -155,8 +159,14 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
     }
     if ( customDispatch != null ) {
       boolean isHaEnabled = isHaEnabled(context);
-      if ( isHaEnabled && (customDispatch.getHaContributorName() != null) ) {
-        addDispatchFilter(context, service, resource, DISPATCH_ROLE, customDispatch.getHaContributorName());
+      String haContributorName = customDispatch.getHaContributorName();
+      String haClassName = customDispatch.getHaClassName();
+      if ( isHaEnabled && (haContributorName != null || haClassName != null)) {
+        if (haContributorName != null) {
+          addDispatchFilter(context, service, resource, DISPATCH_ROLE, haContributorName);
+        } else {
+          addDispatchFilterForClass(context, service, resource, haClassName);
+        }
       } else {
         String contributorName = customDispatch.getContributorName();
         if ( contributorName != null ) {
@@ -164,13 +174,29 @@ public class ServiceDefinitionDeploymentContributor extends ServiceDeploymentCon
         } else {
           String className = customDispatch.getClassName();
           if ( className != null ) {
-            FilterDescriptor filter = resource.addFilter().name(getName()).role(DISPATCH_ROLE).impl(GatewayDispatchFilter.class);
-            filter.param().name(DISPATCH_IMPL_PARAM).value(className);
+            addDispatchFilterForClass(context, service, resource, className);
           }
         }
       }
     } else {
       addDispatchFilter(context, service, resource, DISPATCH_ROLE, "http-client");
+    }
+  }
+
+  private void addDispatchFilterForClass(DeploymentContext context, Service service, ResourceDescriptor resource, String className) {
+    FilterDescriptor filter = resource.addFilter().name(getName()).role(DISPATCH_ROLE).impl(GatewayDispatchFilter.class);
+    filter.param().name(DISPATCH_IMPL_PARAM).value(className);
+    FilterParamDescriptor filterParam = filter.param().name(REPLAY_BUFFER_SIZE_PARAM).value(DEFAULT_REPLAY_BUFFER_SIZE);
+    for ( Map.Entry<String, String> serviceParam : service.getParams().entrySet() ) {
+      if ( REPLAY_BUFFER_SIZE_PARAM.equals(serviceParam.getKey()) ) {
+        filterParam.value(serviceParam.getValue());
+      }
+    }
+    if ( context.getGatewayConfig().isHadoopKerberosSecured() ) {
+      filter.param().name("kerberos").value("true");
+    } else {
+      //special case for hive
+      filter.param().name("basicAuthPreemptive").value("true");
     }
   }
 

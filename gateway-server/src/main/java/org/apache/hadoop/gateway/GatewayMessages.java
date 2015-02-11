@@ -328,4 +328,7 @@ public interface GatewayMessages {
 
   @Message( level = MessageLevel.INFO, text = "Computed roles/groups: {0} for principal: {1}" )
   void lookedUpUserRoles(Set<String> roleNames, String userName);
+
+  @Message( level = MessageLevel.INFO, text = "Configured stacks directory is {0}" )
+  void usingStacksDirectory(String path);
 }

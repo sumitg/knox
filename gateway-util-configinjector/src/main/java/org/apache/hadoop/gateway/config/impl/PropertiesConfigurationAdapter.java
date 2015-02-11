@@ -31,7 +31,7 @@ public class PropertiesConfigurationAdapter implements ConfigurationAdapter {
   }
 
   @Override
-  public String getConfigurationValue( String name ) throws ConfigurationException {
+  public Object getConfigurationValue( String name ) throws ConfigurationException {
     return properties.getProperty( name );
   }
 
