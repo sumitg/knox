@@ -37,7 +37,7 @@ public class DispatchDeploymentContributor extends ProviderDeploymentContributor
   private static final String DISPATCH_IMPL_PARAM = "dispatch-impl";
 
   // Default global replay buffer size in KB
-  public static final String DEFAULT_REPLAY_BUFFER_SIZE = "4";
+  public static final String DEFAULT_REPLAY_BUFFER_SIZE = "8";
 
   @Override
   public String getRole() {

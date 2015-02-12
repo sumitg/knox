@@ -301,7 +301,7 @@ public class HttpClientDispatch extends AbstractGatewayDispatch {
    }
 
    @Configure
-   protected void setReplayBufferSize(@Default("4") int size) {
+   protected void setReplayBufferSize(@Default("8") int size) {
       replayBufferSize = size;
    }
 
