@@ -75,7 +75,7 @@ public class GatewayConfigImpl extends Configuration implements GatewayConfig {
 
   private static final String GATEWAY_CONFIG_FILE_PREFIX = "gateway";
 
-  private static final String STACKS_SERVICES_DIRECTORY = "services";
+  private static final String DEFAULT_STACKS_SERVICES_DIR = "services";
 
   public static final String[] GATEWAY_CONFIG_FILENAMES = {
       GATEWAY_CONFIG_DIR_PREFIX + "/" + GATEWAY_CONFIG_FILE_PREFIX + "-default.xml",
@@ -102,6 +102,7 @@ public class GatewayConfigImpl extends Configuration implements GatewayConfig {
   public static final String DEPLOYMENT_DIR = GATEWAY_CONFIG_FILE_PREFIX + ".deployment.dir";
   public static final String SECURITY_DIR = GATEWAY_CONFIG_FILE_PREFIX + ".security.dir";
   public static final String DATA_DIR = GATEWAY_CONFIG_FILE_PREFIX + ".data.dir";
+  public static final String STACKS_SERVICES_DIR = GATEWAY_CONFIG_FILE_PREFIX + ".services.dir";
   public static final String HADOOP_CONF_DIR = GATEWAY_CONFIG_FILE_PREFIX + ".hadoop.conf.dir";
 //  public static final String SHIRO_CONFIG_FILE = GATEWAY_CONFIG_FILE_PREFIX + ".shiro.config.file";
   public static final String FRONTEND_URL = GATEWAY_CONFIG_FILE_PREFIX + ".frontend.url";
@@ -167,8 +168,9 @@ public class GatewayConfigImpl extends Configuration implements GatewayConfig {
 
   @Override
   public String getGatewayStacksDir() {
-    return getGatewayDataDir() + File.separator + STACKS_SERVICES_DIRECTORY;
+    return get(STACKS_SERVICES_DIR, getGatewayDataDir() + File.separator + DEFAULT_STACKS_SERVICES_DIR);
   }
+
   @Override
   public String getHadoopConfDir() {
     return get( HADOOP_CONF_DIR );

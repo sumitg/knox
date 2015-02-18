@@ -66,7 +66,6 @@ public class DispatchDeploymentContributor extends ProviderDeploymentContributor
         }
       }
     }
-
     if( context.getGatewayConfig().isHadoopKerberosSecured() ) {
       filter.param().name("kerberos").value("true");
     }

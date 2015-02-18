@@ -17,9 +17,6 @@
  */
 package org.apache.hadoop.gateway.topology.xml;
 
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.binder.DigesterLoader;
 import org.apache.hadoop.gateway.topology.Provider;
