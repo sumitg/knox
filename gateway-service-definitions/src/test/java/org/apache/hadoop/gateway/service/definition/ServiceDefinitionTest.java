@@ -24,9 +24,7 @@ import javax.xml.bind.Unmarshaller;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class ServiceDefinitionTest {
 
@@ -34,15 +32,46 @@ public class ServiceDefinitionTest {
   public void testUnmarshalling() throws Exception {
     JAXBContext context = JAXBContext.newInstance(ServiceDefinition.class);
     Unmarshaller unmarshaller = context.createUnmarshaller();
+    URL url = ClassLoader.getSystemResource("services/foo/1.0.0/service.xml");
+    ServiceDefinition definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
+    assertEquals("foo", definition.getName());
+    assertEquals("FOO", definition.getRole());
+    assertEquals("1.0.0", definition.getVersion());
+    assertEquals("custom-client", definition.getDispatch().getContributorName());
+    assertEquals("ha-client", definition.getDispatch().getHaContributorName());
+    List<Policy> policies = definition.getPolicies();
+    assertEquals(5, policies.size());
+    String[] policyOrder = new String[]{"webappsec", "authentication", "rewrite", "identity-assertion", "authorization"};
+    for (int i=0; i< policyOrder.length; i++ ) {
+      assertEquals(policyOrder[i], policies.get(i).getRole());
+    }
+    List<Route> routes = definition.getRoutes();
+    assertNotNull(routes);
+    assertEquals(1, routes.size());
+    Route route = routes.get(0);
+    assertEquals("/foo/?**", route.getPath());
+    assertEquals("http-client", route.getDispatch().getContributorName());
+    policies = route.getPolicies();
+    assertEquals(5, policies.size());
+    policyOrder = new String[]{"webappsec", "federation", "identity-assertion", "authorization", "rewrite"};
+    for (int i=0; i< policyOrder.length; i++ ) {
+      assertEquals(policyOrder[i], policies.get(i).getRole());
+    }
+  }
+
+  @Test
+  public void testUnmarshallingCommonServices() throws Exception {
+    JAXBContext context = JAXBContext.newInstance(ServiceDefinition.class);
+    Unmarshaller unmarshaller = context.createUnmarshaller();
     URL url = ClassLoader.getSystemResource("services/yarn-rm/2.5.0/service.xml");
     ServiceDefinition definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
     assertEquals("resourcemanager", definition.getName());
     assertEquals("RESOURCEMANAGER", definition.getRole());
     assertEquals("2.5.0", definition.getVersion());
-    List<Route> bindings = definition.getRoutes();
-    assertNotNull(bindings);
-    assertEquals(12, bindings.size());
-    assertNotNull(bindings.get(0).getPath());
+    List<Route> routes = definition.getRoutes();
+    assertNotNull(routes);
+    assertEquals(12, routes.size());
+    assertNotNull(routes.get(0).getPath());
     url = ClassLoader.getSystemResource("services/hbase/0.98.0/service.xml");
     definition = (ServiceDefinition) unmarshaller.unmarshal(url.openStream());
     assertNotNull(definition.getDispatch());
@@ -53,4 +82,5 @@ public class ServiceDefinitionTest {
     assertEquals("org.apache.hadoop.gateway.hdfs.dispatch.HdfsDispatch", definition.getDispatch().getClassName());
     assertEquals("org.apache.hadoop.gateway.hdfs.dispatch.WebHdfsHaHttpClientDispatch", definition.getDispatch().getHaClassName());
   }
+
 }

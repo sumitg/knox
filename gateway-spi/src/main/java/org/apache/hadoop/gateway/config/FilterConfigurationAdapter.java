@@ -17,7 +17,6 @@
  */
 package org.apache.hadoop.gateway.config;
 
-
 import javax.servlet.FilterConfig;
 
 public class FilterConfigurationAdapter implements ConfigurationAdapter {

@@ -333,4 +333,14 @@ public interface GatewayMessages {
 
   @Message( level = MessageLevel.INFO, text = "Configured stacks directory is {0}" )
   void usingStacksDirectory(String path);
+
+  @Message( level = MessageLevel.ERROR, text = "Failed to load {0} file : {1}" )
+  void failedToLoadServiceDefinition(String fileName, @StackTrace( level = MessageLevel.DEBUG ) Exception e);
+
+  @Message( level = MessageLevel.DEBUG, text = "No rewrite file found in service directory {0}" )
+  void noRewriteFileFound(String path);
+
+  @Message( level = MessageLevel.DEBUG, text = "Added Service definition name: {0}, role : {1}, version : {2}" )
+  void addedServiceDefinition(String serviceName, String serviceRole, String version);
+
 }

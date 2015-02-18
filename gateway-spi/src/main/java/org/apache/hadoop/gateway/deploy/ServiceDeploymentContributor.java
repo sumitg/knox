@@ -28,6 +28,11 @@ public interface ServiceDeploymentContributor {
   // The name of this service deployment contributor.  Not used yet.
   String getName();
 
+  /**
+   * Returns the version of the deployment contributor. This helps in providing versioned
+   * contributions for service versions.
+   * @return the version
+   */
   Version getVersion();
 
   // Called after provider initializeContribution methods and in arbitrary order relative to other service contributors.
