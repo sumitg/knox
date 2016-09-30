@@ -105,6 +105,7 @@
         <jetty-version>9.2.15.v20160210</jetty-version>
         <surefire-version>2.16</surefire-version>
         <failsafe-version>2.19.1</failsafe-version>
+        <metrics-version>3.1.2</metrics-version>
     </properties>
 
     <licenses>
@@ -1100,6 +1101,27 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>apache-jstl</artifactId>
                 <version>${jetty-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-core</artifactId>
+                <version>${metrics-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-httpclient</artifactId>
+                <version>${metrics-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-graphite</artifactId>
+                <version>${metrics-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-jetty9</artifactId>
+                <version>${metrics-version}</version>
             </dependency>
 
             <!-- ********** ********** ********** ********** ********** ********** -->

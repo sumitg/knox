@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import com.codahale.metrics.jetty9.InstrumentedHandler;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.cli.CommandLine;
@@ -63,6 +64,7 @@ import org.apache.hadoop.gateway.filter.DefaultTopologyHandler;
 import org.apache.hadoop.gateway.i18n.messages.MessagesFactory;
 import org.apache.hadoop.gateway.i18n.resources.ResourcesFactory;
 import org.apache.hadoop.gateway.services.GatewayServices;
+import org.apache.hadoop.gateway.services.metrics.MetricsService;
 import org.apache.hadoop.gateway.services.registry.ServiceRegistry;
 import org.apache.hadoop.gateway.services.security.SSLService;
 import org.apache.hadoop.gateway.services.topology.TopologyService;
@@ -351,6 +353,8 @@ public class GatewayServer {
     CorrelationHandler correlationHandler = new CorrelationHandler();
     correlationHandler.setHandler( traceHandler );
 
+//    MetricsService metricsService = services.getService(GatewayServices.METRICS_SERVICE);
+//    InstrumentedHandler instrumentedHandler = new InstrumentedHandler(metricsService.getMetricRegistry(), config.getDefaultTopologyName());
     DefaultTopologyHandler defaultTopoHandler = new DefaultTopologyHandler( config, services, contexts );
 
     handlers.setHandlers( new Handler[]{ correlationHandler, defaultTopoHandler, logHandler } );

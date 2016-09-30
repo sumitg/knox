@@ -145,4 +145,16 @@ public interface GatewayConfig {
 
   List<String> getGlobalRulesServices();
 
+  boolean isMetricsEnabled();
+
+  boolean isJmxMetricsReportingEnabled();
+
+  boolean isGraphiteMetricsReportingEnabled();
+
+  String getGraphiteHost();
+
+  int getGraphitePort();
+
+  int getGraphiteReportingFrequency();
+
 }

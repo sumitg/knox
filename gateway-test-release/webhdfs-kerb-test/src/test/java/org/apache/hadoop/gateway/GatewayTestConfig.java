@@ -350,4 +350,34 @@ public class GatewayTestConfig extends Configuration implements GatewayConfig {
   public List<String> getGlobalRulesServices() {
     return Collections.EMPTY_LIST;
   }
+
+  @Override
+  public boolean isMetricsEnabled() {
+    return false;
+  }
+
+  @Override
+  public boolean isJmxMetricsReportingEnabled() {
+    return false;
+  }
+
+  @Override
+  public boolean isGraphiteMetricsReportingEnabled() {
+    return false;
+  }
+
+  @Override
+  public String getGraphiteHost() {
+    return null;
+  }
+
+  @Override
+  public int getGraphitePort() {
+    return 0;
+  }
+
+  @Override
+  public int getGraphiteReportingFrequency() {
+    return 0;
+  }
 }

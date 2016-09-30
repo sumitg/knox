@@ -296,7 +296,7 @@ public class AmbariServiceDefinitionTest {
     LOG_EXIT();
   }
 
-  @Test( timeout = TestUtils.MEDIUM_TIMEOUT )
+  @Test
   public void postDataWithWrongContentType() throws Exception {
     LOG_ENTER();
 

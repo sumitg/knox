@@ -17,7 +17,15 @@
  */
 package org.apache.hadoop.gateway.dispatch;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.httpclient.HttpClientMetricNameStrategies;
+import com.codahale.metrics.httpclient.HttpClientMetricNameStrategy;
+import com.codahale.metrics.httpclient.InstrumentedHttpClientConnectionManager;
+import com.codahale.metrics.httpclient.InstrumentedHttpClients;
+import com.codahale.metrics.httpclient.InstrumentedHttpRequestExecutor;
 import org.apache.hadoop.gateway.config.GatewayConfig;
+import org.apache.hadoop.gateway.services.GatewayServices;
+import org.apache.hadoop.gateway.services.metrics.MetricsService;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolException;
@@ -34,12 +42,14 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
@@ -56,8 +66,15 @@ public class DefaultHttpClientFactory implements HttpClientFactory {
 
   @Override
   public HttpClient createHttpClient(FilterConfig filterConfig) {
-    HttpClientBuilder builder = HttpClients.custom();
+    GatewayServices services = (GatewayServices) filterConfig.getServletContext()
+        .getAttribute(GatewayServices.GATEWAY_SERVICES_ATTRIBUTE);
+    MetricsService metricsService = services.getService(GatewayServices.METRICS_SERVICE);
+    HttpClientBuilder builder = metricsService.getInstrumented(HttpClientBuilder.class);
 
+//        InstrumentedHttpClients.custom(registry, HttpClientMetricNameStrategies.QUERYLESS_URL_AND_METHOD);
+
+
+//    HttpClientBuilder builder = HttpClients.custom();
     if ( "true".equals(System.getProperty(GatewayConfig.HADOOP_KERBEROS_SECURED)) ) {
       CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
       credentialsProvider.setCredentials(AuthScope.ANY, new UseJaasCredentials());
